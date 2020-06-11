@@ -1,0 +1,65 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test the type statement.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    return 0
+}
+
+func Test1() {
+    // Test simple type statements.
+    @build(t1a == ushort*)       Print("Test1a: pass\n")
+    @build(t1b == ushort*[])     Print("Test1b: pass\n")
+}
+
+type t1a = ushort*
+type t1b = t1a[]
+
+func Test2() {
+    // Test generic types.
+    var v: t2a<5, int>
+    @build(($v) == int*[5])  Print("Test2a: pass\n")
+}
+
+template<N: int, T> type t2a = T*[N]
+
+func Test3() {
+    // Test type statements in a statement block.
+    type t3a = t2a<20, long>
+    if 5 > 3 {
+      @build(t3a == t3b<long*>)  Print("Test3a: pass\n")
+      template<T> type t3b = T[20]
+    }
+}

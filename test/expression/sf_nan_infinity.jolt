@@ -1,0 +1,213 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test nan and infinity literals and values.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    Test4()
+    Test5()
+    Test6()
+    Test7()
+    Test8()
+    return 0
+}
+
+func PV(test: int, subtest: char, v: float) {
+    Print("Test")
+    Print(test)
+    Print(subtest)
+    Print(": float ")
+    Print(v)
+    Print('\n')
+}
+
+func PV(test: int, subtest: char, v: double) {
+    Print("Test")
+    Print(test)
+    Print(subtest)
+    Print(": double ")
+    Print(v)
+    Print('\n')
+}
+
+func Test1() {
+    NanBinOp<1, float>()
+}
+
+func Test2() {
+    NanBinOp<2, double>()
+}
+
+func Test3() {
+    InfinityBinOp<3, float>()
+}
+
+func Test4() {
+    InfinityBinOp<4, double>()
+}
+
+template<TEST: int, T> class NanBinOp {
+    static func operator()() {
+        var x: T = 11.5
+        var z: enum(nan)
+
+        const f = 4.25
+        const n = 5
+        const e = .nan
+
+        PV(TEST, 'a', 13.25 + .nan)
+        PV(TEST, 'b', 100 + .nan)
+        PV(TEST, 'c', .infinity + .nan)
+        PV(TEST, 'd', x + .nan)
+        PV(TEST, 'e', f + .nan)
+        PV(TEST, 'f', n + .nan)
+        PV(TEST, 'g', e + .nan)
+        PV(TEST, 'h', z + .nan)
+
+        PV(TEST, 'i', .nan + 13.25)
+        PV(TEST, 'j', .nan + 100)
+        PV(TEST, 'k', .nan + x)
+        PV(TEST, 'l', .nan + f)
+        PV(TEST, 'm', .nan + n)
+        PV(TEST, 'n', .nan + e)
+        PV(TEST, 'o', .nan + z)
+    }
+}
+
+template<TEST: int, T> class InfinityBinOp {
+    static func operator()() {
+        var x: T = 11.5
+        var z: enum(infinity)
+
+        const f = 4.25
+        const n = 5
+        const e = .infinity
+
+        PV(TEST, 'a', 13.25 + .infinity)
+        PV(TEST, 'b', 100 + .infinity)
+        PV(TEST, 'c', .nan + .infinity)
+        PV(TEST, 'd', x + .infinity)
+        PV(TEST, 'e', f + .infinity)
+        PV(TEST, 'f', n + .infinity)
+        PV(TEST, 'g', e + .infinity)
+        PV(TEST, 'h', z + .infinity)
+
+        PV(TEST, 'i', .infinity + 13.25)
+        PV(TEST, 'j', .infinity + 100)
+        PV(TEST, 'k', .infinity + x)
+        PV(TEST, 'l', .infinity + f)
+        PV(TEST, 'm', .infinity + n)
+        PV(TEST, 'n', .infinity + e)
+        PV(TEST, 'o', .infinity + z)
+    }
+}
+
+func Test5() {
+    // FIXME: GCC and Clang's printf disagree on how to print -nan, and that's
+    // surprising hard to work around.
+
+    const e = .nan
+    var z: enum(nan)
+
+    PV(5, 'a', .nan)
+    // PV(5, 'b', -.nan)
+    PV(5, 'c', e)
+    // PV(5, 'd', -e)
+    PV(5, 'e', z)
+    // PV(5, 'f', -z)
+}
+
+func Test6() {
+    const e = .infinity
+    var z: enum(infinity)
+
+    PV(6, 'a', .infinity)
+    PV(6, 'b', -.infinity)
+    PV(6, 'c', e)
+    PV(6, 'd', -e)
+    PV(6, 'e', z)
+    PV(6, 'f', -z)
+}
+
+func Test7() {
+    const e = .nan
+    var y: enum(nan)
+    var z: enum(infinity)
+
+    var x1: float = .nan
+    PV(7, 'a', x1)
+    var x2: double = y
+    PV(7, 'b', x2)
+
+    var x3: float = e
+    PV(7, 'c', x3)
+    var x4: double = e
+    PV(7, 'd', x4)
+
+    x1 = .infinity
+    PV(7, 'e', x1)
+    x2 = .infinity
+    PV(7, 'f', x2)
+
+    x3 = z
+    PV(7, 'g', x3)
+    x4 = z
+    PV(7, 'h', x4)
+}
+
+func Test8() {
+    const e = .infinity
+    var y: enum(infinity)
+    var z: enum(nan)
+
+    var x1: float = .infinity
+    PV(8, 'a', x1)
+    var x2: double = y
+    PV(8, 'b', x2)
+
+    var x3: float = e
+    PV(8, 'c', x3)
+    var x4: double = e
+    PV(8, 'd', x4)
+
+    x1 = .nan
+    PV(8, 'e', x1)
+    x2 = .nan
+    PV(8, 'f', x2)
+
+    x3 = z
+    PV(8, 'g', x3)
+    x4 = z
+    PV(8, 'h', x4)
+}

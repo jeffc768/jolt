@@ -1,0 +1,214 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test tuple types.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    Test4()
+    return 0
+}
+
+func Test1() {
+    // Test # operastor.
+    Print("Test1a: ")
+    Print(#(10, Print("aa "), (20, Print("bb "), "sdsd"), 30, Print("cc ")))
+    Print('\n')
+
+    var v1: (int, sublist: (int, int, int), int, int, int, int)
+    Print("Test1b: ")
+    Print(#v1)
+    Print(' ')
+    Print(#v1.sublist)
+    Print('\n')
+}
+
+func Test2() {
+    // Test tuple field access, by name and ordinal.
+    C2<(x: int, int, y: int, int, z: int)>.Run("Test2a: ", 10)
+    C2<(int, int, y: int, x: int, z: int)>.Run("Test2b: ", 20)
+    C2<(y: int, z: int, x: int, int, int)>.Run("Test2c: ", 30)
+}
+
+template<T> class C2 {
+    static func Run(test: char[] const&, start: int) {
+        var v = T(start, start + 1, start + 2, start + 3, start + 4)
+
+        var x = v.x
+        var y = v.y
+        var z = v.z
+        v.x = y
+        v.y = z
+        v.z = x
+
+        Print(test)
+        Print(v[0])
+        Print(' ')
+        Print(v[1])
+        Print(' ')
+        Print(v[2])
+        Print(' ')
+        Print(v[3])
+        Print(' ')
+        Print(v[4])
+        Print('\n')
+    }
+}
+
+func Test3() {
+    // Test tuple construction (and destruction).
+    Print("Test3a:")
+    {
+        var v: (C3<'A'>, C3<'B'>, C3<'C'>, C3<'D'>)
+        v[1].f = '0'
+    }
+    Print('\n')
+
+    Print("Test3b:")
+    {
+        type t = (C3<'A'>, C3<'B'>, C3<'C'>, C3<'D'>)
+        var v = t(C3<'A'>(), C3<'B'>(), C3<'C'>(), C3<'D'>())
+        v[1].f = '1'
+    }
+    Print('\n')
+
+    Print("Test3c:")
+    {
+        type t = (C3, C3, C3, C3)
+        var v: t = (C3('A'), C3('B'), C3('C'), C3('D'))
+        v[1].f = '2'
+    }
+    Print('\n')
+
+    Print("Test3d:")
+    {
+        type t = (C3, C3, C3, C3)
+        var v: t = t(C3('A'), C3('B'), C3('C'), C3('D'))
+        v[1].f = '3'
+
+        // FIXME: this should work
+        //var u: t = ('a', 'b', 'c', 'd')
+    }
+    Print('\n')
+
+    Print("Test3e: ")
+    {
+        var v = (C3('A'), (C3('B'), C3('C')), C3('D'))
+        v[1][0].f = '4'
+    }
+    Print('\n')
+
+    Print("Test3f: ")
+    {
+        var c = C3('A')
+        var v = (c, c, c, c)
+        v[1].f = '5'
+    }
+    Print('\n')
+}
+
+template<CH: char = '.'> class C3 {
+    var f: char = CH
+
+    this() {
+        Print(" +")
+        Print(f)
+    }
+
+    this(c: char) {
+        :+: f = c
+        Print(" +")
+        Print(f)
+    }
+
+    this(that: C3 const&) {
+        :+: f = that.f
+        Print(" +")
+        Print(f)
+    }
+
+    ~this() {
+        Print(" -")
+        Print(f)
+    }
+}
+
+func Test4() {
+    // Test tuple assignment.
+    type t = (C4, (x: C4, y: C4), C4)
+    var v: t = (C4('a'), (x: C4('b'), y: C4('c')), C4('d'))
+    var u: t
+
+    Print(  "Test4a: ")
+    u[1].y.f = 'z'
+    u = v
+
+    Print("\nTest4b: ")
+    u = (C4('g'), (x: C4('h'), y: C4('i')), C4('j'))
+
+    Print("\nTest4c: ")
+    u = t(C4('m'), (x: C4('n'), y: C4('o')), C4('p'))
+    Print('\n')
+}
+
+class C4 {
+    var f: char = '.'
+
+    this() { }
+
+    this(c: char) {
+        :+: f = c
+    }
+
+    this(that: C4 const&) {
+        :+: f = that.f
+    }
+
+    func operator=(that: C4 const&) -> C4& {
+        Print(' ')
+        Print(f)
+        f = that.f
+        Print('=')
+        Print(f)
+        return this
+    }
+
+    func operator=(that: C4&&) -> C4& {
+        Print(' ')
+        Print(f)
+        f = that.f
+        Print('%')
+        Print(f)
+        return this
+    }
+}

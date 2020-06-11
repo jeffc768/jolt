@@ -1,0 +1,58 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    return 0
+}
+
+func Test1() {
+    // These variable names are all legal identifiers.
+
+    var a: int = 1
+    var B_: int = 2
+    var _934_542345: int = 3
+    var a45_vvv: int = 4
+    var _D_: int = 5
+    var abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789: int = 6
+    var ________________________________________________________________________________________________________________________________________________________________________________________________________1: int = 7
+    var ________________________________________________________________________________________________________________________________________________________________________________________________________2: int = 8
+
+    Print(  "Test1a: "); Print(a)
+    Print("\nTest1b: "); Print(B_)
+    Print("\nTest1c: "); Print(_934_542345)
+    Print("\nTest1d: "); Print(a45_vvv)
+    Print("\nTest1e: "); Print(_D_)
+    Print("\nTest1f: "); Print(abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789)
+    Print("\nTest1g: "); Print(________________________________________________________________________________________________________________________________________________________________________________________________________1)
+    Print("\nTest1h: "); Print(________________________________________________________________________________________________________________________________________________________________________________________________________2)
+    Print("\n")
+}

@@ -1,0 +1,80 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test global variables (fields that are members of namespaces).
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    return 0
+}
+
+func Test1() {
+    // Simple uses of a field.
+
+    f1 = 529
+    Print("Test1a: "); Print(f1); Print("\n")
+
+    f1 = f1 - 5
+    Print("Test1b: "); Print(f1); Print("\n")
+
+    f1 = f1 * f1 - f1
+    Print("Test1c: "); Print(f1); Print("\n")
+}
+
+var f1: int // FIXME: no initializers yet
+var f2: int
+
+func Test2() {
+    // Pass as argument.
+
+    Print("Test2a: "); Print(f1); Print("\n")
+
+    p(f1, f1, f1)
+    Print("Test2b: "); Print(f1); Print("\n")
+}
+
+func p(a: int&, b: int&, c: int) {
+    a = a + 9
+    b = b - 6
+    a = a * (c / 1000)
+}
+
+func Test3() {
+    // Use two fields instead of one.
+
+    f2 = 826592
+
+    p(f2, f1, 2000)
+    Print("Test3a: "); Print(f1); Print("\n")
+    Print("Test3b: "); Print(f2); Print("\n")
+}

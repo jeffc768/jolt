@@ -1,0 +1,124 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test char types.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    Test4()
+    return 0
+}
+
+func Test1() {
+    BinOp<op_eq >("Test1a:")
+    BinOp<op_ne >("Test1b:")
+    BinOp<op_lt >("Test1c:")
+    BinOp<op_le >("Test1d:")
+    BinOp<op_gt >("Test1e:")
+    BinOp<op_ge >("Test1f:")
+}
+
+template<OP: namespace> class BinOp {
+    static func operator()(name: char[] const&) {
+        Print(name)
+        Run('a', 'A')
+        Run('B', 'b')
+        Run('=', '=')
+        Print("\n")
+    }
+
+    static func Run(a: char, b: char) {
+        if OP.op(a, b) {
+            Print("  true")
+        } else {
+            Print(" false")
+        }
+    }
+}
+
+namespace op_eq  { func op(a: char, b: char) = a == b }
+namespace op_ne  { func op(a: char, b: char) = a != b }
+namespace op_lt  { func op(a: char, b: char) = a < b  }
+namespace op_le  { func op(a: char, b: char) = a <= b }
+namespace op_gt  { func op(a: char, b: char) = a > b  }
+namespace op_ge  { func op(a: char, b: char) = a >= b }
+
+func Test2() {
+    C2<"operator ==", 'a', 'b'>("Test2a: ")
+    C2<"operator !=", '@'     >("Test2b: ")
+    C2<"operator <" , 'd', 'a'>("Test2c: ")
+    C2<"operator <=", '9', '9'>("Test2d: ")
+    C2<"operator >" , '~'     >("Test2e: ")
+    C2<"operator >=", '@', ' '>("Test2f: ")
+}
+
+template<OP: char[], A: char, B: char = '@'> class C2 {
+    static func operator()(name: char[] const&) {
+        Print(name)
+        Print(A.OP~(B))
+        Print("\n")
+    }
+}
+
+func Test3() {
+    Print("Test3a: ")
+    Print('5' > '6')
+    Print(' ')
+    Print('5' < '6')
+    Print('\n')
+
+    Print("Test3b: ")
+    var c = 'A'
+    var d: char
+    d = c
+    Print(d == 'A')
+    Print(' ')
+    Print('b' != d)
+    Print('\n')
+}
+
+func Test4() {
+    Print("Test4a: ")
+    var c = ' '
+    Print(int(c))
+    Print(' ')
+    Print(int('A'))
+    Print('\n')
+
+    Print("Test4b: ")
+    var i = 65
+    Print(char(i))
+    Print(' ')
+    Print(char(66))
+    Print('\n')
+}

@@ -1,0 +1,128 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test void type.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    Test4()
+    return 0
+}
+
+func Test1() {
+    BinOp<op_eq >("Test1a:")
+    BinOp<op_ne >("Test1b:")
+    BinOp<op_lt >("Test1c:")
+    BinOp<op_le >("Test1d:")
+    BinOp<op_gt >("Test1e:")
+    BinOp<op_ge >("Test1f:")
+}
+
+template<OP: namespace> class BinOp {
+    static func operator()(name: char[] const&) {
+        Print(name)
+        Run(void())
+        Print("\n")
+    }
+
+    static func Run(a: void) {
+        var b: void
+        if OP.op(a, b) {
+            Print("  true")
+        } else {
+            Print(" false")
+        }
+    }
+}
+
+namespace op_eq  { func op(a: void, b: void) = a == b }
+namespace op_ne  { func op(a: void, b: void) = a != b }
+namespace op_lt  { func op(a: void, b: void) = a < b  }
+namespace op_le  { func op(a: void, b: void) = a <= b }
+namespace op_gt  { func op(a: void, b: void) = a > b  }
+namespace op_ge  { func op(a: void, b: void) = a >= b }
+
+func Test2() {
+    Print("Test2: ")
+    var x: void = void()
+    var y: void = void(10)
+    Print(x == y)
+    Print("\n")
+}
+
+func Test3() {
+    Print("Test3a: ")
+    var x: C3
+    x.run()
+    Print("\n")
+
+    Print("Test3b: ")
+    var y: C3<c3>
+    y.run()
+    Print("\n")
+}
+
+const c3 = void()
+
+template<V: void = void()> class C3 {
+    var f1: void = V
+
+    func run() {
+        var v: void = V
+        Print(v == void())
+        Print(" ")
+        Print(V != v)
+        Print(" ")
+        Print(f1 == v)
+    }
+}
+
+func Test4() {
+    Print("Test4a: ")
+    var y: C4<c3>
+    y.run()
+    Print("\n")
+}
+
+template<V: void> class C4 {
+    var f1: void
+
+    func run() {
+        var v: void = V
+        Print(v == void())
+        Print(" ")
+        Print(V != v)
+        Print(" ")
+        Print(f1 == v)
+    }
+}

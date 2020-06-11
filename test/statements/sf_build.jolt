@@ -1,0 +1,94 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test the build attribute in the context of statement attribute lists.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    return 0
+}
+
+func Test1() {
+    // Simple uses of build attribute.
+
+    Print("Test1a: pass\n")
+
+    @build(false) Print("Test1b: fail\n")
+    @build(true)  Print("Test1c: pass\n")
+    @build        Print("Test1d: pass\n")
+
+    Print("Test1e: pass\n")
+}
+
+func Test2() {
+    // Get a bit fancier.
+
+    @build(true)  const flag = true
+    @build(false) var flag: bool = false
+
+    @build(flag)  const flag2 = false
+
+    var b: bool = true
+    @build(flag2) b = false
+    if b {
+        Print("Test2: true\n")
+    } else {
+        Print("Test2: false\n")
+    }
+
+    // The following is semantically bad, but no compilation error will
+    // result because it isn't built.
+    @build(false) flag = false
+}
+
+func Test3() {
+    // Test evaluation order of nested statement attributes.  Inner lists
+    // must not be evaluated until outer lists are, and even then only if
+    // the outer list doesn't suppress building.
+    var flag: bool = true
+
+    @build({Print("Test3a: pass\n"); false})
+        if flag {
+            @build({Print("Test3b: fail\n"); true}) Print("Test3c: fail\n")
+        }
+
+    @build({Print("Test3d: pass\n"); true})
+        if flag {
+            @build({Print("Test3e: pass\n"); true}) Print("Test3f: pass\n")
+        }
+
+    @build({Print("Test3g: pass\n"); true})
+        if flag {
+            @build({Print("Test3h: pass\n"); false}) Print("Test3i: fail\n")
+        }
+}

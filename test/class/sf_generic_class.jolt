@@ -1,0 +1,172 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test generic classes.
+//
+// No specializations or requires clauses.
+// Generic parameter defaults cannot yet use earlier parameters.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    Test4()
+    Test5()
+    Test6()
+    return 0
+}
+
+func Test1() {
+    C1<"Test1a">.Run()
+    C1<"Test1b", N2>.Run()
+    C1<"Test1c", N3, 2>.Run()
+
+    C1<"Test1d"><N2>.Run()
+    C1<"Test1e"><N3, 3>.Run()
+    C1<"Test1f"><N3><4>.Run()
+}
+
+template<TN: char[], NS: namespace = N1, N: int = 3> class C1: NS.Base {
+    static func Run() {
+        Print(TN)
+        Print(N)
+        Print(": ")
+        Print(n + N)
+        Print("\n")
+        @build(N > 0)  C1<TN, NS, N - 1>.Run()
+    }
+}
+
+namespace N1 {
+    class Base {
+        const n = 1000
+    }
+}
+
+namespace N2 {
+    class Base {
+        const n = 2000
+    }
+}
+
+namespace N3 {
+    class Base {
+        const n = 3000
+    }
+}
+
+func Test2() {
+    C2<"Test2a", int>.Run()
+    C2<"Test2b", N1.Base*>.Run()
+    C2<"Test2c", ulong>.Run()
+    C2<"Test2d", namespace>.Run()
+}
+
+template<N: char[], T> class C2 {
+    static func Run() {
+        Print(N)
+        Print(": ")
+        @build(T == int)         Print("int")
+        @build(T == N1.Base*)    Print("N1.Base*")
+        @build(T == ulong)       Print("ulong")
+        @build(T == namespace)   Print("namespace")
+        Print("\n")
+    }
+}
+
+func Test3() {
+    C3<N1.Base>.Run("Test3a", 23)
+    C3<N2.Base>.Run("Test3b", 45)
+    C3<N3.Base>.Run("Test3c", 67)
+}
+
+template<T> class C3 {
+    static func Run(name: char[] const&, arg: int) {
+        Print(name)
+        Print(": ")
+        Print(T.n + arg)
+        Print("\n")
+    }
+}
+
+func Test4() {
+    C4<N1>.Run("Test4a", 123)
+    C4<N2>.Run("Test4b", 245)
+    C4<N3>.Run("Test4c", 367)
+}
+
+template<T: namespace> class C4 {
+    template<U> class D4 {
+        static func Run(name: char[] const&, arg: int) {
+            Print(name)
+            Print(": ")
+            @build(U == T.Base)  Print(U.n + arg)
+            Print("\n")
+        }
+    }
+
+    static func Run(name: char[] const&, arg: int) {
+        D4<T.Base>.Run(name, arg + 1)
+    }
+}
+
+func Test5() {
+    C5<C2<"Test5a">, int>.Run()
+    C5<C2<"Test5b">, N1.Base*>.Run()
+    C5<C2<"Test5c">, ulong>.Run()
+    C5<C2<"Test5d">, namespace>.Run()
+}
+
+template<NT: template<U>, T> class C5 {
+    static func Run() {
+        NT<T>.Run()
+    }
+}
+
+func Test6() {
+    Print("Test6a: ")
+    var v1: C6<"abc", 7373>
+    Print(v1.abc)
+    Print("\n")
+
+    Print("Test6b: ")
+    var v2: C6<"def", 2618>
+    Print(v2.def)
+    Print("\n")
+}
+
+template<N: char[], V: int> class C6 {
+    var N~: int
+
+    this() {
+        :+: N~ = V
+    }
+}

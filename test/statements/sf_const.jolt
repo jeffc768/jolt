@@ -1,0 +1,102 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test the const statement.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    Test4()
+    return 0
+}
+
+func Test1() {
+    // Test explicit types.
+
+    Printer<$c1a>("Test1a", c1a)
+    Printer<$c1b>("Test1b", c1b)
+    Printer<$c1c>("Test1c", c1c)
+}
+
+const c1a = short(-400)
+const c1b = long(99999999999)
+const c1c = sbyte(c1a)
+
+func Test2() {
+    // Test implicit types.
+
+    Printer<$c2a>("Test2a", c2a)
+    Printer<$c2b>("Test2b", c2b)
+    Printer<$c2c>("Test2c", c2c)
+}
+
+const c2a = c1a
+const c2b = c1b
+const c2c = c1c
+
+func Test3() {
+    // Test expression values.
+
+    Printer<$c3a>("Test3a", c3a)
+    Printer<$c3b>("Test3b", c3b)
+}
+
+const c3a = m3(c1a) + c1c
+const c3b = m3(c1a) + c1b
+func m3(arg: int) -> int { arg * 2 }
+
+func Test4() {
+    // Quickly verify const statements in statement scopes.
+    if c1a < 0 {
+        const c4a = short(m3(c1a))
+        Printer<$c4a>("Test4a", c4a)
+        if c1c > 0 {
+            const c4b = c4a
+            Printer<$c4b>("Test4b", c4b)
+        }
+    }
+}
+
+template<T> class Printer {
+    static func operator()(testname: char[] const&, value: T) {
+        Print(testname)
+        Print(": ")
+
+        @build(T == short)  Print("short:")
+        @build(T == int)    Print("int:")
+        @build(T == long)   Print("long:")
+        @build(T == sbyte)  Print("sbyte:")
+
+        Print(value)
+        Print("\n")
+    }
+}

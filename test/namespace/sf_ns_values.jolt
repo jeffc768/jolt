@@ -1,0 +1,86 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test global variables (fields that are members of namespaces).
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    return 0
+}
+
+func Test1() {
+    // Simple namespace expression.  A namespace subexpression is always
+    // evaluated as a compile time expression.
+
+    Print(  "Test1a: "); Print(((0 == 1) ? A : B).c)
+    Print("\nTest1b: "); Print(((1 == 1) ? A : B).c)
+    Print("\n")
+}
+
+func Test2() {
+    // Use a function that returns a namespace.
+
+    Print(  "Test2a: "); Print(p2(0).c)
+    Print("\nTest2b: "); Print(p2(1).c)
+    Print("\nTest2c: "); Print(p2(2).c)
+    Print("\nTest2d: "); Print(p2(3).c)
+    Print("\n")
+}
+
+func p2(n: int) -> namespace {
+    if n < 2 {
+        return A if n == 0
+        exit B
+    } else {
+        if n == 2 {
+            C
+        } else {
+            D
+        }
+    }
+}
+
+namespace A {
+    const c = 111
+}
+
+namespace B {
+    const c = 222
+}
+
+namespace C {
+    const c = 333
+}
+
+namespace D {
+    const c = 444
+}

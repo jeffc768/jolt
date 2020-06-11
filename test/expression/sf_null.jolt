@@ -1,0 +1,151 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test null literals and values.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    Test4()
+    return 0
+}
+
+func PV(test: char[] const&, value: bool) {
+    Print(test)
+    Print(": ")
+    Print(value)
+    Print('\n')
+}
+
+func Test1() {
+    var x: int
+    var p: int* = &x
+    var q: int*
+    var z: enum(null)
+
+    const n = .null
+
+    PV("Test1a", p == .null)
+    PV("Test1b", p == null)
+    PV("Test1c", p == n)
+    PV("Test1d", p == z)
+
+    PV("Test1e", .null == p)
+    PV("Test1f", null == p)
+    PV("Test1g", n == p)
+    PV("Test1h", z == p)
+
+    PV("Test1i", q == .null)
+    PV("Test1j", q == null)
+    PV("Test1k", q == n)
+    PV("Test1l", q == z)
+
+    PV("Test1m", .null == q)
+    PV("Test1n", null == q)
+    PV("Test1o", n == q)
+    PV("Test1p", z == q)
+}
+
+func Test2() {
+    var x: int[10]
+    var p: int[]* = &x
+    var q: int[]*
+    var z: enum(null)
+
+    const n = .null
+
+    PV("Test2a", p == .null)
+    PV("Test2b", p == null)
+    PV("Test2c", p == n)
+    PV("Test2d", p == z)
+
+    PV("Test2e", .null == p)
+    PV("Test2f", null == p)
+    PV("Test2g", n == p)
+    PV("Test2h", z == p)
+
+    PV("Test2i", q == .null)
+    PV("Test2j", q == null)
+    PV("Test2k", q == n)
+    PV("Test2l", q == z)
+
+    PV("Test2m", .null == q)
+    PV("Test2n", null == q)
+    PV("Test2o", n == q)
+    PV("Test2p", z == q)
+}
+
+func Test3() {
+    var x: int
+    var p: int* = &x
+    var q: int* = &x
+    var r: int* = &x
+    var s: int* = &x
+    var z: enum(null)
+
+    const n = .null
+
+    p = .null
+    PV("Test3a", p != null)
+
+    q = null
+    PV("Test3b", q != n)
+
+    r = n
+    PV("Test3c", r != .null)
+
+    s = z
+    PV("Test3d", z != .null)
+}
+
+func Test4() {
+    var x: int[10]
+    var p: int[]* = &x
+    var q: int[]* = &x
+    var r: int[]* = &x
+    var s: int[]* = &x
+    var z: enum(null)
+
+    const n = .null
+
+    p = .null
+    PV("Test4a", p != null)
+
+    q = null
+    PV("Test4b", q != n)
+
+    r = n
+    PV("Test4c", r != .null)
+
+    s = z
+    PV("Test4d", z != .null)
+}

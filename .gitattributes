@@ -1,0 +1,24 @@
+*   text=auto
+
+README              text
+Makefile            text
+lldbinit            text
+
+*.c                 text
+*.cmd               text
+*.cpp               text
+*.filters           text
+*.h                 text
+*.jolt              text
+*.l                 text
+*.natvis            text
+*.out               text
+*.pbxproj           text
+*.pl                text
+*.plist             text
+*.props             text
+*.sln               text
+*.test              text
+*.vcxproj           text
+*.xcworkspacedata   text
+*.y                 text

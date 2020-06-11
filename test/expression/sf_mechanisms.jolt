@@ -1,0 +1,266 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test argument mechanisms.  Due to implementation details, both simple and
+// non-simple types need to be tests.  A type is simple, loosely speaking, if
+// values of that type can be passed in a register.
+
+// Mechanisms not tested are not yet implemented.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    Test4()
+    Test5()
+    return 0
+}
+
+func Test1() {
+    // Test in mechanism.
+
+    var v1: int = 7386
+    Print(  "Test1a: ")
+    m1a(v1)
+    Print(v1)
+
+    var v2 = C(5)
+    Print("\nTest1b: ")
+    m1b(v2)
+    v2.print()
+    Print("\n")
+}
+
+func m1a(a: int) {
+    Print(a)
+    Print(" ")
+    a = a + 7
+}
+
+func m1b(a: C) {
+    a.print()
+    Print(" ")
+    a.mutate(2)
+}
+
+func Test2() {
+    // Test ref arguments.
+
+    var v1: int = 7486
+    Print(  "Test2a: ")
+    m2a(v1)
+    Print(v1)
+
+    var v2 = C(4)
+    Print("\nTest2b: ")
+    m2b(v2)
+    v2.print()
+    Print("\n")
+}
+
+func m2a(a: int&) {
+    Print(a)
+    Print(" ")
+    a = a + 7
+}
+
+func m2b(a: C&) {
+    a.print()
+    Print(" ")
+    a.mutate(2)
+}
+
+class C {
+    var f1: int
+    var f2: int
+    var f3: int
+
+    this() {
+        :+: f1 = 1
+        :+: f2 = 2
+        :+: f3 = 3
+    }
+
+    this(x: int) {
+        :+: f1 = x
+        :+: f2 = x + 1
+        :+: f3 = x + 2
+    }
+
+    func print() {
+        Print(f1)
+        Print(":")
+        Print(f2)
+        Print(":")
+        Print(f3)
+    }
+
+    func mutate(x: int) {
+        f1 = f1 - x
+        f3 = f3 + x
+    }
+}
+
+func Test3() {
+    // Test const vs non-const receivers.
+    Print("Test3a: ")
+
+    var v1: C3
+    v1.m()
+    v1.n()
+
+    var v2: C3 const
+    v2.m()
+    v2.n()
+
+    Print("\n")
+}
+
+class C3 {
+    func m() { Print("A") }
+    func m() const { Print("B") }
+
+    func n() const { Print("C") }
+}
+
+func Test4() {
+    // Test lvalue vs rvalue overload resolution.
+    Print("Test4a: ")
+    var v1: C4a
+    var v2: C4b
+    var v3: C4b const
+
+    v1.m(v2)
+    v1.m(v3)
+    v1.m(C4b())
+
+    v1.n(v2)
+    v1.n(v3)
+    v1.n(C4b())
+
+    Print("\n")
+}
+
+class C4a {
+    func m(arg: C4b&) { Print("A") }
+    func m(arg: C4b const&) { Print("B") }
+    func m(arg: C4b&&) { Print("C") }
+
+    func n(arg: C4b&) { Print("D") }
+    func n(arg: C4b const&) { Print("E") }
+}
+
+class C4b {
+    var f1: int
+}
+
+func Test5() {
+    // Test const vs non-const overload resolution.
+    Print("Test5a: ")
+
+    var im: int
+    var ic: int const
+
+    m5a(im)
+    m5a(ic)
+    m5b(im)
+    m5b(ic)
+
+    Print("\nTest5b: ")
+
+    var amm: int[4]
+    var amc: (int const)[4]
+    var acm: int[4] const
+
+    m5a(amm[1])
+    m5a(amc[1])
+    m5a(acm[1])
+    m5b(amm[1])
+    m5b(amc[1])
+    m5b(acm[1])
+
+    Print("\nTest5c: ")
+
+    var cm: C4b
+    var cc: C4b const
+
+    m5a(cm.f1)
+    m5a(cc.f1)
+    m5b(cm.f1)
+    m5b(cc.f1)
+
+    Print("\nTest5d: ")
+
+    var om: C5
+    var oc: C5 const
+
+    m5a(om.f1m.f1)
+    m5a(oc.f1m.f1)
+    m5b(om.f1m.f1)
+    m5b(oc.f1m.f1)
+    m5a(om.f1c.f1)
+    m5a(oc.f1c.f1)
+    m5b(om.f1c.f1)
+    m5b(oc.f1c.f1)
+
+    Print("-")
+
+    m5a(om.f2m[1])
+    m5a(oc.f2m[1])
+    m5b(om.f2m[1])
+    m5b(oc.f2m[1])
+    m5a(om.f2c[1])
+    m5a(oc.f2c[1])
+    m5b(om.f2c[1])
+    m5b(oc.f2c[1])
+
+    Print("\n")
+}
+
+func m5a(arg: int&) { Print("A") }
+func m5a(arg: int const&) { Print("B") }
+
+func m5b(arg: int const&) { Print("C") }
+
+class C5 {
+    var f1m: C4b
+    var f1c: C4b const
+    var f2m: int[4]
+    var f2c: (int const)[4]
+
+    // FIXME: Can't handle autogen with const or array members yet.
+    // Should never execute anyway.
+    this(that: C5 const&) {
+        Print("fail-copy")
+    }
+
+    func operator=(that: C5 const&) { Print("fail-assign") }
+}

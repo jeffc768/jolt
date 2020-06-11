@@ -1,0 +1,145 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test inheritance of common (non-member) entities, basically anything other
+// than methods and fields, that are shared by a class and its metaclass. {
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    Test4()
+    return 0
+}
+
+func Test1() {
+    // Test some simple inheritance.  x, z, and C1aa are inherited, while y
+    // not as C1d has its own definition.
+
+    Print(  "Test1a: "); Print(C1d.x)
+    Print("\nTest1b: "); Print(C1d.y)
+    Print("\nTest1c: "); Print(C1d.z)
+    Print("\nTest1d: "); Print(C1d.C1aa.p(100))
+    Print("\nTest1e: "); Print(C1d.q)
+    Print("\n")
+}
+
+class C1a {
+    const x = 10
+
+    class C1aa {
+        static func p(a: int) -> int { a + 1 }
+    }
+}
+
+class C1b {
+    const y = 20
+}
+
+class C1c {
+    const z = 30
+}
+
+class C1d: C1a, C1b, C1c {
+    const y = 40
+    const q = 60
+}
+
+func Test2() {
+    // Hide inherited entities with entities of different kinds.
+
+    Print(  "Test2a: "); Print(C2.x.p(200))
+    Print("\nTest2b: "); Print(C2.C1aa)
+    Print("\n")
+}
+
+class C2: C1a {
+    class x {
+        static func p(a: int) -> int { a - 1 }
+    }
+
+    const C1aa = C1a.C1aa.p(542)
+}
+
+func Test3() {
+    // Make sure that build(false) doesn't confuse the compiler.
+
+    Print(  "Test3a: "); Print(C3d.x)
+    Print("\nTest3b: "); Print(C3d.y)
+    Print("\nTest3c: "); Print(C3d.z)
+    Print("\n")
+}
+
+class C3a {
+    const x = 10
+    @build(false)  const z = 80
+}
+
+class C3b {
+    @build(false)  const x = 20
+    const y = 20
+}
+
+class C3c {
+    @build(false)  const x = 90
+    const z = 30
+}
+
+class C3d:
+             C3a,
+             C3b,
+             C3c {
+    @build(false)  const y = 40
+}
+
+func Test4() {
+    // Test build attribute on base specifiers.
+
+    Print(  "Test4a: "); Print(C4d.x)
+    Print("\nTest4b: "); Print(C4d.y)
+    Print("\n")
+}
+
+class C4a {
+    const x = 90
+}
+
+class C4b {
+    const y = 99
+}
+
+class C4c {
+    const x = 10
+}
+
+class C4d: C4a, @build(true)  C4b,
+                @build(false) C4c {
+}

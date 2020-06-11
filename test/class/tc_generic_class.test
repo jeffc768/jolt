@@ -1,0 +1,79 @@
+# Copyright (c) 2014, Jeff Cohen
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+source sf_generic_class.jolt
+
+assert_eq      Test1a0    1000
+assert_eq      Test1a1    1001
+assert_eq      Test1a2    1002
+assert_eq      Test1a3    1003
+
+assert_eq      Test1b0    2000
+assert_eq      Test1b1    2001
+assert_eq      Test1b2    2002
+assert_eq      Test1b3    2003
+
+assert_eq      Test1c0    3000
+assert_eq      Test1c1    3001
+assert_eq      Test1c2    3002
+
+assert_eq      Test1d0    2000
+assert_eq      Test1d1    2001
+assert_eq      Test1d2    2002
+assert_eq      Test1d3    2003
+
+assert_eq      Test1e0    3000
+assert_eq      Test1e1    3001
+assert_eq      Test1e2    3002
+assert_eq      Test1e3    3003
+
+assert_eq      Test1f0    3000
+assert_eq      Test1f1    3001
+assert_eq      Test1f2    3002
+assert_eq      Test1f3    3003
+assert_eq      Test1f4    3004
+
+assert_eq      Test2a     int
+assert_eq      Test2b     N1.Base*
+assert_eq      Test2c     ulong
+assert_eq      Test2d     namespace
+
+assert_eq      Test3a     1023
+assert_eq      Test3b     2045
+assert_eq      Test3c     3067
+
+assert_eq      Test4a     1124
+assert_eq      Test4b     2246
+assert_eq      Test4c     3368
+
+assert_eq      Test5a     int
+assert_eq      Test5b     N1.Base*
+assert_eq      Test5c     ulong
+assert_eq      Test5d     namespace
+
+assert_eq      Test6a     7373
+assert_eq      Test6b     2618
+

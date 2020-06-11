@@ -1,0 +1,108 @@
+How to run the tests
+====================
+
+To run one or more tests, use test_runner.pl with a list of zero or more tests
+or directories containing tests.  When none are provided, all tests contained
+within the current directory and all subdirectories are run.
+
+By default, the debug version of the Jolt compiler is used.  To run the tests
+against the release version of the compiler, use --release, i.e.
+"perl test_runner.pl --release test1 test2".
+
+By default, only one test is run at a time.  Use --jobs=<n> to run up to n tests
+simultaneously.  Best performance occurs when n is equal to or slightly less
+than the number of cores.  Diminishing returns set in well before all cores are
+used.  The environment variable JOLT_TR_TESTS may be set to provide a default
+value other than one.
+
+
+Test framework design
+=====================
+
+Most test cases arrange for Jolt code to execute at both compile and run time
+and verify correct results in both cases.  This is achieved by structuring the
+Jolt code in a certain fashion:
+
+   func Main() -> int {
+      const ct = RunTests()
+      return ct + RunTests()
+   }
+
+   func RunTests() -> int {
+      Test1()
+      Test2()
+      Test3()
+      return 0
+   }
+
+This forces the test code to be executed at compile time, via the const
+declaration, and at run time via the second call to RunTests in the return
+statement.  The value returned from Main is irrelevant, and serves mainly
+as a means of guaranteeing that neither call to RunTests is optimized out
+of existance.
+
+The individual tests use Print calls to record testing results.  For example:
+
+   if true {
+      Print("Test1f: pass\n")
+   } else {
+      Print("Test1f: fail\n")
+   }
+
+Each line of output has a name and a value.  The test runner verifies that each
+name appears in the output and with the correct value.  Verification runs
+twice, once for compile time execution and again for run time execution.
+
+Each test needs a xxx.test file.  The test runner locates all such files based
+on the command line arguments given it and use the directives they contain to
+run the tests.  The directives are as follows:
+
+   source list-of-files
+
+      Each test must have one source directive, which lists the set of Jolt
+      source files to be compiled.  Most tests use only one file.  Files are
+      relative to the directory containing the test file.
+
+   import list-of-files
+
+      List of modules that are imported, directly or indirectly, by the test.
+      Order is important when modules import other modules.  Tests cannot
+      share modules.
+
+   assert_eq TestName Value
+
+      Asserts that the Jolt code emitted a line of the form "TestName: Value".
+      Spaces are ignored before and after the test name and value, but are NOT
+      ignored within the value.
+
+   assert_nil TestName
+
+      Assets that the Jolt code did not emit a line of the form "TestName: xx",
+      for any value of xx.
+
+   epoch compile|run|both
+
+      Assertions after this directive will execute only if the output from
+      compilation is being examined (compile), or the output from running the
+      compiled Jolt program (run).  If "both", then assertions are run against
+      both types of output.  Default is "both".
+
+When a test completes execution, a file containing the output of all the
+commands executed is left behind.  For a test named tc_xxx.test, this file is
+named tc_xxx.out.  Other files that were created, such as object files, get
+deleted.
+
+
+Issues
+======
+
+Due to the current primitive state of the compiler, compromises must be made.
+In particular:
+
+  * Little negative testing.  There ought to be a large number of tests
+    specifically designed to provoke compilation errors from the Jolt compiler.
+    But error handling is very primitive at this time, and even the few errors
+    that can be tested for would be very fragile tests.
+
+  * Reliance on Print methods, which are just a hack until a proper I/O library
+    comes into existance.

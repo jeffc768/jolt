@@ -1,0 +1,189 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test enum types.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    Test4()
+    Test5()
+    return 0
+}
+
+func Test1() {
+    type E1 = enum(a, b, c, d, e, f, g)
+    type E2 = enum(g, f, e, d, c, b, a)
+
+    AllBinOps<E1>("Test1a")
+    AllBinOps<E2>("Test1b")
+}
+
+template<T, OP: char[]> class BinOp {
+    static func operator()() {
+        var v1: T = .c
+        var v2 = T.e
+        Print(v1.OP~(v2) ? " t" : " f")
+
+        v1 = .d
+        v2 = v1
+        Print(v1.OP~(v2) ? "t" : "f")
+    }
+}
+
+template<T> class AllBinOps {
+    static func operator()(testname: char[] const&) {
+        Print(testname)
+        Print(":")
+
+        BinOp<T, "operator ==">()
+        BinOp<T, "operator !=">()
+        BinOp<T, "operator <">()
+        BinOp<T, "operator <=">()
+        BinOp<T, "operator >">()
+        BinOp<T, "operator >=">()
+
+        Print("\n")
+    }
+}
+
+func Test2() {
+    Print("Test2a: ")
+    m2a(false)
+
+    Print("Test2b: ")
+    m2a(true)
+
+    Print("Test2c: ")
+    m2b(E2a.a)
+    m2b(E2b.a)
+    Print("\n")
+
+    Print("Test2d: ")
+    var v1 = E2a.x
+    var v2 = E2b.v
+    m2b(v1)
+    m2b(v2)
+    Print("\n")
+}
+
+type E2a = enum(a, b, c, x, y, z)
+type E2b = enum(u, v, w, a, b, c)
+
+func m2a(flag: bool) {
+    m2b(flag ? .b : .y)
+    m2b(flag ? .c : .v)
+    Print("\n")
+}
+
+func m2b(e: E2a) { Print("a"); Print(e.ord); Print(" ") }
+func m2b(e: E2b) { Print("b"); Print(e.ord); Print(" ") }
+
+func Test3() {
+    Print("Test3a: ")
+    C3<E3.j>.Run()
+    Print("\n")
+
+    Print("Test3b: ")
+    C3.Run()
+    Print("\n")
+
+    Print("Test3c: ")
+    C3<.h>.Run()
+    Print("\n")
+
+    Print("Test3d: ")
+    C3<false ? .k : .g>.Run()
+    Print("\n")
+}
+
+type E3 = enum(g, h, i, j, k)
+
+template<E: E3 = .i> class C3 {
+    static func Run() {
+        Print(E.ord)
+    }
+}
+
+func Test4() {
+    type E = enum(aa, bb, cc, dd)
+
+    Print("Test4a: ")
+    Print(E.cc.ord)
+    Print("\n")
+
+    Print("Test4b: ")
+    var v = E.dd
+    Print(v.ord)
+    Print("\n")
+
+    Print("Test4c: ")
+    var w = E.bb
+    Print((true ? w : v).ord)
+    Print("\n")
+}
+
+func Test5() {
+    C5a<"Test5a", byte,      3>.Run()
+    C5a<"Test5b", sbyte,    -3>.Run()
+    C5a<"Test5c", short,   -13>.Run()
+    C5a<"Test5d", ushort,   15>.Run()
+    C5a<"Test5e", int,    -215>.Run()
+    C5a<"Test5f", uint,    255>.Run()
+    C5a<"Test5g", long, -55108>.Run()
+    C5a<"Test5h", ulong, 65535>.Run()
+}
+
+template<NAME: char[], T, MULT: int> class C5a {
+    const av1 = T(1)
+    const av2 = av1 * T(MULT)
+    const av3 = av2 * T(MULT)
+    const av4 = av3 * T(MULT)
+    const av5 = av4 * T(MULT)
+    type E = T enum(aa = av1, bb = av2, cc = av3, dd = av4, ee = av5)
+
+    static func Run() {
+        Print(NAME)
+        Print(':')
+        f(.aa)
+        f(.bb)
+        f(.cc)
+        f(.dd)
+        f(.ee)
+        Print('\n')
+    }
+
+    static func f(arg: E) {
+        Print(' ')
+        Print(#arg)
+    }
+}

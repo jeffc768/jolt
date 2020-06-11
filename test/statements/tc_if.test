@@ -1,0 +1,71 @@
+# Copyright (c) 2014, Jeff Cohen
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+source sf_if.jolt
+
+assert_eq      Test1a     pass
+assert_eq      Test1c     pass
+assert_nil     Test1e
+assert_eq      Test1f     pass
+assert_eq      Test1g     pass
+assert_eq      Test1h     pass
+assert_eq      Test1i     pass
+
+assert_eq      Test2a_t   true
+assert_eq      Test2a_f   false
+
+assert_eq      Test2b_ttt one
+assert_eq      Test2b_ttf one
+assert_eq      Test2b_tft one
+assert_eq      Test2b_tff one
+assert_eq      Test2b_ftt two
+assert_eq      Test2b_ftf two
+assert_eq      Test2b_fft three
+assert_eq      Test2b_fff four
+
+assert_eq      Test2c_tt  one
+assert_eq      Test2c_tf  one
+assert_eq      Test2c_ft  two
+assert_eq      Test2c_ff  three
+
+assert_eq      Test2d_1   10
+assert_eq      Test2d_2   20
+assert_eq      Test2d_3   30
+assert_eq      Test2d_4   40
+assert_eq      Test2d_5   50
+
+assert_eq      Test3_tf0  3
+assert_eq      Test3_tf1  1
+assert_eq      Test3_tf2  2
+assert_eq      Test3_ft0  6
+assert_eq      Test3_ft1  1
+assert_eq      Test3_ft2  6
+assert_eq      Test3_ft3  4
+assert_eq      Test3_ft4  5
+assert_eq      Test3_ff3  4
+assert_eq      Test3_ff4  8
+assert_eq      Test3_ff5  7
+

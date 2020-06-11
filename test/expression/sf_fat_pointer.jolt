@@ -1,0 +1,127 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test fat pointer operations.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    return 0
+}
+
+func Test1() {
+    Print(  "Test1a: ")
+    var v1: C1
+    v1.f1 = 536
+    var p: C1* = &v1
+    Print((*p).f1)
+
+    Print("\nTest1b: ")
+    var v2: C3
+    v2.f1 = 863
+    p = &v2
+    Print((*p).f1)
+
+    Print("\nTest1c: ")
+    (*p).f1 = 364
+    Print(v1.f1)
+    Print(":")
+    Print(v2.f1)
+    Print("\n")
+}
+
+func Test2() {
+    Print(  "Test2a: ")
+    var v1: C1
+    v1.f1 = 754
+    var p: C1* = &v1
+    var q: C1** = &p
+    Print((*xyz(*q)).f1)
+
+    Print("\nTest2b: ")
+    (*xyz(*q)).f1 = 238
+    Print(v1.f1)
+
+    Print("\nTest2c: ")
+    var v2: C1
+    v2.f1 = 873
+    var p2: C1* = &v2
+    var q2: C1** = &p2
+    *q = *q2
+    Print((*(*q)).f1)
+    Print(":")
+    Print((*(*q2)).f1)
+
+    Print("\nTest2d: ")
+    (*q)->f1 = (*q)->f1 + 1
+    (*(*q2)).f1 = (*(*q2)).f1 - 5
+    Print(v1.f1)
+    Print(":")
+    Print(v2.f1)
+
+    Print("\n")
+}
+
+func xyz(p: C1*) -> C1* { p }
+
+func Test3() {
+    Print(  "Test3a: ")
+    var v1: C1
+    v1.f1 = 318
+    var p: C1* = &v1
+    v1.f1p = &*p
+    Print(v1.f1p->f1)
+
+    Print("\nTest3b: ")
+    v1.f1 = v1.f1 - 10
+    Print((*&v1).f1)
+
+    Print("\n")
+}
+
+class C1 {
+    var f1: int
+    var f1p: C1*
+}
+
+class C2 {
+    var f2: int
+}
+
+// FIXME: cannot upcast a pointer to a non-primary base (i.e., C2)
+class C3: C1, C2 {
+    var f3: int
+}
+
+class C4: C3 {
+    var f4: int
+}

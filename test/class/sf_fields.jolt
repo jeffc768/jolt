@@ -1,0 +1,126 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test fields of objects.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    return 0
+}
+
+func Test1() {
+    // Simple uses of a field.
+
+    var obj: C
+
+    obj.f1 = 529
+    Print("Test1a: "); Print(obj.f1); Print("\n")
+
+    obj.f1 = obj.f1 - 5
+    Print("Test1b: "); Print(obj.f1); Print("\n")
+
+    obj.f1 = obj.f1 * obj.f1 - obj.f1
+    Print("Test1c: "); Print(obj.f1); Print("\n")
+
+    C.s1 = 527
+    Print("Test1d: "); Print(C.s1); Print("\n")
+
+    C.s1 = C.s1 - 5
+    Print("Test1e: "); Print(C.s1); Print("\n")
+
+    C.s1 = C.s1 * C.s1 - C.s1
+    Print("Test1f: "); Print(C.s1); Print("\n")
+}
+
+class C {
+    // FIXME: make public once visibility attributes are implemented
+    // FIXME: no constructors yet
+    var f1: int
+    var f2: int
+
+    static var s1: int
+    static var s2: int
+}
+
+func Test2() {
+    // Pass as argument.
+
+    var obj: C
+
+    obj.f1 = 274052
+    Print("Test2a: "); Print(obj.f1); Print("\n")
+
+    p(obj.f1, obj.f1, obj.f1)
+    Print("Test2b: "); Print(obj.f1); Print("\n")
+
+    Print("Test2c: "); Print(C.s1); Print("\n")
+
+    p(C.s1, C.s1, C.s1)
+    Print("Test2d: "); Print(C.s1); Print("\n")
+}
+
+func p(a: int&, b: int&, c: int) {
+    a = a + 9
+    b = b - 6
+    a = a * (c / 1000)
+}
+
+func Test3() {
+    // Use two fields instead of one.
+
+    var obj: C
+
+    obj.f1 = 75091070
+    obj.f2 = 826592
+
+    p(obj.f2, obj.f1, 2000)
+    Print("Test3a: "); Print(obj.f1); Print("\n")
+    Print("Test3b: "); Print(obj.f2); Print("\n")
+
+    C.s2 = 817637
+    p(C.s2, C.s1, 2000)
+    Print("Test3c: "); Print(C.s1); Print("\n")
+    Print("Test3d: "); Print(C.s2); Print("\n")
+
+    var obj2: C
+    obj2.f1 = 75091060
+
+    p(obj.f2, obj2.f1, 2000)
+    Print("Test3e: "); Print(obj2.f1); Print("\n")
+    Print("Test3f: "); Print(obj.f2); Print("\n")
+}
+
+func Test4() {
+    // Use field of returned object.
+    // FIXME: fields of rvalues does not work yet.
+}

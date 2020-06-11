@@ -1,0 +1,123 @@
+# Copyright (c) 2014, Jeff Cohen
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+source sf_nan_infinity.jolt
+
+assert_eq      Test1a     double nan
+assert_eq      Test1b     double nan
+assert_eq      Test1c     double nan
+assert_eq      Test1d     float nan
+assert_eq      Test1e     double nan
+assert_eq      Test1f     double nan
+assert_eq      Test1g     double nan
+assert_eq      Test1h     float nan
+assert_eq      Test1i     double nan
+assert_eq      Test1j     double nan
+assert_eq      Test1k     float nan
+assert_eq      Test1l     double nan
+assert_eq      Test1m     double nan
+assert_eq      Test1n     double nan
+assert_eq      Test1o     float nan
+
+assert_eq      Test2a     double nan
+assert_eq      Test2b     double nan
+assert_eq      Test2c     double nan
+assert_eq      Test2d     double nan
+assert_eq      Test2e     double nan
+assert_eq      Test2f     double nan
+assert_eq      Test2g     double nan
+assert_eq      Test2h     float nan
+assert_eq      Test2i     double nan
+assert_eq      Test2j     double nan
+assert_eq      Test2k     double nan
+assert_eq      Test2l     double nan
+assert_eq      Test2m     double nan
+assert_eq      Test2n     double nan
+assert_eq      Test2o     float nan
+
+assert_eq      Test3a     double inf
+assert_eq      Test3b     double inf
+assert_eq      Test3c     double nan
+assert_eq      Test3d     float inf
+assert_eq      Test3e     double inf
+assert_eq      Test3f     double inf
+assert_eq      Test3g     double inf
+assert_eq      Test3h     float inf
+assert_eq      Test3i     double inf
+assert_eq      Test3j     double inf
+assert_eq      Test3k     float inf
+assert_eq      Test3l     double inf
+assert_eq      Test3m     double inf
+assert_eq      Test3n     double inf
+assert_eq      Test3o     float inf
+
+assert_eq      Test4a     double inf
+assert_eq      Test4b     double inf
+assert_eq      Test4c     double nan
+assert_eq      Test4d     double inf
+assert_eq      Test4e     double inf
+assert_eq      Test4f     double inf
+assert_eq      Test4g     double inf
+assert_eq      Test4h     float inf
+assert_eq      Test4i     double inf
+assert_eq      Test4j     double inf
+assert_eq      Test4k     double inf
+assert_eq      Test4l     double inf
+assert_eq      Test4m     double inf
+assert_eq      Test4n     double inf
+assert_eq      Test4o     float inf
+
+assert_eq      Test5a     double nan
+#assert_eq      Test5b     double nan
+assert_eq      Test5c     double nan
+#assert_eq      Test5d     double nan
+assert_eq      Test5e     float nan
+#assert_eq      Test5f     float nan
+
+assert_eq      Test6a     double inf
+assert_eq      Test6b     double -inf
+assert_eq      Test6c     double inf
+assert_eq      Test6d     double -inf
+assert_eq      Test6e     float inf
+assert_eq      Test6f     float -inf
+
+assert_eq      Test7a     float nan
+assert_eq      Test7b     double nan
+assert_eq      Test7c     float nan
+assert_eq      Test7d     double nan
+assert_eq      Test7e     float inf
+assert_eq      Test7f     double inf
+assert_eq      Test7g     float inf
+assert_eq      Test7h     double inf
+
+assert_eq      Test8a     float inf
+assert_eq      Test8b     double inf
+assert_eq      Test8c     float inf
+assert_eq      Test8d     double inf
+assert_eq      Test8e     float nan
+assert_eq      Test8f     double nan
+assert_eq      Test8g     float nan
+assert_eq      Test8h     double nan

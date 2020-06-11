@@ -1,0 +1,162 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test min and max literals and values.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    Test4()
+    Test5()
+    return 0
+}
+
+func PV(test: int, subtest: char, v: int) {
+    Print("Test")
+    Print(test)
+    Print(subtest)
+    Print(": int ")
+    Print(v)
+    Print('\n')
+}
+
+func PV(test: int, subtest: char, v: uint) {
+    Print("Test")
+    Print(test)
+    Print(subtest)
+    Print(": uint ")
+    Print(v)
+    Print('\n')
+}
+
+func Test1() {
+    MinBinOp<1, ushort>()
+}
+
+func Test2() {
+    MinBinOp<2, -3 .. 6000000>()
+}
+
+func Test3() {
+    MaxBinOp<3, ushort>()
+}
+
+func Test4() {
+    MaxBinOp<4, -3 .. 6000000>()
+}
+
+template<TEST: int, T> class MinBinOp {
+    static func operator()() {
+        var x: T = 11
+        var z: enum(min)
+
+        const n = 5
+        const e = .min
+
+        // FIXME: arithmetic between .min and integer literals not yet
+        // supported.
+
+        //PV(TEST, 'a', 13 + .min)
+        PV(TEST, 'b', x + .min)
+        //PV(TEST, 'c', n + .min)
+
+        //PV(TEST, 'd', 13 + z)
+        PV(TEST, 'e', x + z)
+        //PV(TEST, 'f', n + z)
+
+        //PV(TEST, 'g', .min + 13)
+        PV(TEST, 'h', .min + x)
+        //PV(TEST, 'i', .min + n)
+
+        //PV(TEST, 'j', z + 13)
+        PV(TEST, 'k', z + x)
+        //PV(TEST, 'l', z + n)
+    }
+}
+
+template<TEST: int, T> class MaxBinOp {
+    static func operator()() {
+        var x: T = -11
+        var z: enum(max)
+
+        const n = -5
+        const e = .max
+
+        // FIXME: arithmetic between .max and integer literals not yet
+        // supported.
+
+        //PV(TEST, 'a', -13 + .max)
+        PV(TEST, 'b', x + .max)
+        //PV(TEST, 'c', n + .max)
+
+        //PV(TEST, 'd', -13 + z)
+        PV(TEST, 'e', x + z)
+        //PV(TEST, 'f', n + z)
+
+        //PV(TEST, 'g', .max + -13)
+        PV(TEST, 'h', .max + x)
+        //PV(TEST, 'i', .max + n)
+
+        //PV(TEST, 'j', z + -13)
+        PV(TEST, 'k', z + x)
+        //PV(TEST, 'l', z + n)
+    }
+}
+
+func Test5() {
+    type t1 = 34 .. 6000
+    type t2 = byte
+
+    var x1: t1 = .min
+    PV(5, 'a', x1)
+    var x2: t2 = .min
+    PV(5, 'b', x2)
+
+    var y: enum(min)
+
+    var x3: t1 = y
+    PV(5, 'c', x3)
+    var x4: t2 = y
+    PV(5, 'd', x4)
+
+    x1 = .max
+    PV(5, 'e', x1)
+    x2 = .max
+    PV(5, 'f', x2)
+
+    var z: enum(max)
+
+    x3 = z
+    PV(5, 'g', x3)
+    x4 = z
+    PV(5, 'h', x4)
+}

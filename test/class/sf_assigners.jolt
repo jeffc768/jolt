@@ -1,0 +1,139 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test operator= methods.
+
+// FIXME: The following do not yet work:
+//   * Assignment of bases.
+//   * Signatures of operator= methods is incorrect.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    return 0
+}
+
+func Test1() {
+    // Test auto-generated operator= method.  Check that the field
+    // assignments are performed in the correct order (using explicitly
+    // supplied operator= methods).
+
+    var o1: C1a
+    o1.Set(100)
+    var o2: C1a
+    o2.Set(200)
+
+    Print(  "Test1a: ")
+    o1.Dump()
+    Print("\nTest1b: ")
+    o1 = o2
+    Print("\nTest1c: ")
+    o1.Dump()
+    Print("\n")
+}
+
+class C1a {
+    var fa: C1b<"A">
+    var fb: C1b<"B">
+    var fc: C1b<"C">
+    var fd: C1b<"D">
+    var fe: C1b<"E">
+    var ff: C1b<"F">
+    var fg: C1b<"G">
+    var fh: C1b<"H">
+    var fi: C1b<"I">
+    var fj: C1b<"J">
+
+    this() {
+        :+: fa
+        :+: fb
+        :+: fc
+        :+: fj
+    }
+
+    this cons1() {
+        :+: fd
+        :+: fe
+        :+: fj
+    }
+
+    this cons2() {
+        :+: fa
+        :+: fb
+        :+: fg
+        :+: fi
+    }
+
+    this cons3() {
+        :+: fb
+        :+: fd
+    }
+
+    func Set(x: int) {
+        fa.f = x
+        fb.f = x + 1
+        fc.f = x + 2
+        fd.f = x + 3
+        fe.f = x + 4
+        ff.f = x + 5
+        fg.f = x + 6
+        fh.f = x + 7
+        fi.f = x + 8
+        fj.f = x + 9
+    }
+
+    func Dump() {
+        Print(fa.f); Print(" ")
+        Print(fb.f); Print(" ")
+        Print(fc.f); Print(" ")
+        Print(fd.f); Print(" ")
+        Print(fe.f); Print(" ")
+        Print(ff.f); Print(" ")
+        Print(fg.f); Print(" ")
+        Print(fh.f); Print(" ")
+        Print(fi.f); Print(" ")
+        Print(fj.f); Print(" ")
+    }
+}
+
+template<LABEL: char[] = "x"> class C1b {
+    var f: int
+
+    this() {
+        :+: f = 0
+    }
+
+    // Note that "this" is equivalent to "C1b<LABEL>" -- but not "C1b"! -- as
+    // it's outside the scope of the method body.
+    func operator=(that: this const&) {
+        f = that.f
+        Print(LABEL)
+    }
+}

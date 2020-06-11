@@ -1,0 +1,109 @@
+Building
+========
+
+All of the source code is currently in the frontend directory.  After it's
+built, the jolt executable will be in the frontend/Debug (or Release) directory.
+There is no installation process at this time.
+
+On macOS:
+
+  Open build/macos/jolt with Xcode.
+
+  But before the project can be opened for the first time, you must first cd
+  to build/macos and run the command:
+
+      perl genconfig.pl path-to-llvm-config > jolt/llvm-config.xcconfig
+
+  This must be rerun whenever LLVM is updated.  The flex and bison that come
+  with Xcode work.
+
+  The Unix instructions above will also work on macOS.  The testing framework
+  will use whichever binary was built most recently, either by Makefile or
+  by Xcode.
+
+On Unix:
+
+  Run GNU make in the frontend directory.  To build a release binary, specify
+  ENABLE_OPTIMIZED=1.  Set the environment variable USE_LLVM to the path of the
+  proper llvm-config to use.  Most Linux/BSD systems now have pre-built LLVM
+  packages available to install.
+
+To verify the build, go to the test directory and run the tests.  See the README
+file there for further information.
+
+
+Running
+=======
+
+The compiler by default translates Jolt code to object files.
+
+   jolt a.jolt b.jolt c.jolt -o out.o
+
+Jolt source files by convention have a .jolt suffix (though anything not an
+option is considered a file containing Jolt source).  No matter how many
+source files are specified, there is only a single compilation unit.  The
+files are effectively concatenated in an undefined order (nor does that order
+matter).
+
+If an output file is not specifid (-o option), the output file name is derived
+from the first source file.  It shall be an object file or executable; to get
+one of the other possible output file formats, -o must be used to specify a
+file with the appropriate extension.
+
+You can translate to LLVM bitcode:
+
+   jolt a.jolt b.jolt c.jolt -o out.bc
+
+You can also translate to LLVM assembler:
+
+   jolt a.jolt b.jolt c.jolt -o out.ll
+
+or to native assembler:
+
+   jolt a.jolt b.jolt c.jolt -o out.s
+   
+or explicitly to an object file:
+
+   jolt a.jolt b.jolt c.jolt -o out.o
+   
+If the compilation unit includes a Main method, an executable is generated;
+otherwise, a module is being compiled, yielding an object file that can be
+imported into other compilation units.  The -I flag specifies a directory
+to search for imported modules.  Every compilation unit imports std by
+default.
+
+Jolt does not turn on any LLVM optimizations at this time.  To perform opt-
+imizations, generate a bitcode file and run it through the LLVM opt command:
+
+   opt -std-compile-opts in.bc -o out.bc
+
+
+What works?
+===========
+
+Most of the language as described in the language specification is not yet
+implemented.  Some of the major holes:
+
+   * No exceptions.
+
+   * Very few attributes are implemented.
+
+   * No concepts or macros.
+
+   * Method overloading resolution is very simplistic.
+
+   * No standard library of any sort, other than a hackish Print method--not
+     even string classes.
+
+   * switch and throw statements are not implemented.
+
+   * Very poor compilation error handling; hitting an assertion is as likely
+     as a compilation error message.
+
+   * Unsafe stuff is freely permitted.
+
+This is no doubt an incomplete list.
+
+So what does work?  The best way to answer that is to direct your attention to
+the tests.  The Jolt code there works, and comments will describe how the tests
+deviate from "correct" Jolt code due to current holes in the implementation.

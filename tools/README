@@ -1,0 +1,2 @@
+THe file lldbinit contains data formatters for LLDB.  The man page for LLDB
+lists the files that are read when the debugger starts up.

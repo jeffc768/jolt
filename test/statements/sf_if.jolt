@@ -1,0 +1,185 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    return 0
+}
+
+func Test1() {
+    // Test various syntactic forms
+
+    if true {
+        Print("Test1a: pass\n")
+    }
+
+    if true { Print("Test1c: pass\n") }
+
+    if false {
+        Print("Test1e: fail\n")
+    }
+
+    if true {
+        Print("Test1f: pass\n")
+    } else {
+        Print("Test1f: fail\n")
+    }
+
+    if false {
+        Print("Test1g: fail\n")
+    } else { Print("Test1g: pass\n") }
+
+    if true {
+        Print("Test1h: pass\n")
+    } else if true {
+        Print("Test1h: fail1\n")
+    } else {
+        Print("Test1h: fail2\n")
+    }
+
+    if false {
+        Print("Test1h: fail1\n")
+    } else if true { Print("Test1h: pass\n")
+    } else {
+        Print("Test1h: fail2\n")
+    }
+
+    if false {
+        Print("Test1i: fail1\n")
+    } else if false { Print("Test1i: fail2\n") } else { Print("Test1i: pass\n") }
+}
+
+func Test2() {
+    // Test ifs using non-constant test expressions.
+
+    Print("Test2a_t: "); Test2_if1(true)
+    Print("Test2a_f: "); Test2_if1(false)
+
+    Print("Test2b_ttt: "); Test2_if2(true,  true,  true)
+    Print("Test2b_ttf: "); Test2_if2(true,  true,  false)
+    Print("Test2b_tft: "); Test2_if2(true,  false, true)
+    Print("Test2b_tff: "); Test2_if2(true,  false, false)
+    Print("Test2b_ftt: "); Test2_if2(false, true,  true)
+    Print("Test2b_ftf: "); Test2_if2(false, true,  false)
+    Print("Test2b_fft: "); Test2_if2(false, false, true)
+    Print("Test2b_fff: "); Test2_if2(false, false, false)
+
+    Print("Test2c_tt: "); Test2_if3(true,  true)
+    Print("Test2c_tf: "); Test2_if3(true,  false)
+    Print("Test2c_ft: "); Test2_if3(false, true)
+    Print("Test2c_ff: "); Test2_if3(false, false)
+
+    Print("Test2d_1: "); Test2_if4(1);
+    Print("Test2d_2: "); Test2_if4(2);
+    Print("Test2d_3: "); Test2_if4(3);
+    Print("Test2d_4: "); Test2_if4(4);
+    Print("Test2d_5: "); Test2_if4(5);
+}
+
+func Test2_if1(b: bool) {
+    if b {
+        Print("true\n")
+    } else {
+        Print("false\n")
+    }
+}
+
+func Test2_if2(b1: bool, b2: bool, b3: bool) {
+    if b1 {
+        Print("one\n")
+    } else if b2 {
+        Print("two\n")
+    } else if b3 {
+        Print("three\n")
+    } else {
+        Print("four\n")
+    }
+}
+
+func Test2_if3(b1: bool, b2: bool) {
+    if {noop(b2); noop(b1)} {
+        Print("one\n")
+    } else if {if b1 { noop(b2) } else { b2 }} {
+        Print("two\n")
+    } else {
+        Print("three\n")
+    }
+}
+
+func Test2_if4(n: int) {
+    var x: int = 50
+    if n == 1 {
+        x = 10
+    } else if n == 2 {
+        x = 20
+    } else if n == 3 {
+        x = 30
+    } else if n == 4 {
+        x = 40
+    }
+    Print(x)
+    Print("\n")
+}
+
+func noop(b: bool) -> bool { b }
+
+func Test3() {
+    // Test non-local exit from ifs.
+    
+    Print("Test3_tf0: "); Print(Test3_if(true,  false, 0)); Print("\n")
+    Print("Test3_tf1: "); Print(Test3_if(true,  false, 1)); Print("\n")
+    Print("Test3_tf2: "); Print(Test3_if(true,  false, 2)); Print("\n")
+    
+    Print("Test3_ft0: "); Print(Test3_if(false, true,  0)); Print("\n")
+    Print("Test3_ft1: "); Print(Test3_if(false, true,  1)); Print("\n")
+    Print("Test3_ft2: "); Print(Test3_if(false, true,  2)); Print("\n")
+    Print("Test3_ft3: "); Print(Test3_if(false, true,  3)); Print("\n")
+    Print("Test3_ft4: "); Print(Test3_if(false, true,  4)); Print("\n")
+    
+    Print("Test3_ff3: "); Print(Test3_if(false, false, 3)); Print("\n")
+    Print("Test3_ff4: "); Print(Test3_if(false, false, 4)); Print("\n")
+    Print("Test3_ff5: "); Print(Test3_if(false, false, 5)); Print("\n")
+}
+
+func Test3_if(b1: bool, b2: bool, e: int) -> int {
+    if {exit 1 if e == 1; b1} {
+        exit 2 if e == 2
+        3
+    } else if {exit 4 if e == 3; b2} {
+        exit 5 if e == 4
+        6
+    } else {
+        exit 7 if e == 5
+        8
+    }
+}

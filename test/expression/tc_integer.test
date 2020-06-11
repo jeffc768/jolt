@@ -1,0 +1,77 @@
+# Copyright (c) 2014, Jeff Cohen
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+source sf_integer.jolt
+
+assert_eq      Test1aa    69,-104 int:-35 int:173 int:-7176 int:0 int:69 int:0 int:-35 int:-35 bool:false bool:true bool:false bool:false bool:true bool:true
+assert_eq      Test1ab    69,-7016 int:-6947 int:7085 int:-484104 int:0 int:69 int:0 int:-6947 int:-6947 bool:false bool:true bool:false bool:false bool:true bool:true
+assert_eq      Test1ac    69,-72552 int:-72483 int:72621 int:-5006088 int:0 int:69 int:0 int:-72483 int:-72483 bool:false bool:true bool:false bool:false bool:true bool:true
+assert_eq      Test1ad    69,-72552 long:-72483 long:72621 long:-5006088 long:0 long:69 long:0 long:-72483 long:-72483 bool:false bool:true bool:false bool:false bool:true bool:true
+
+assert_eq      Test1ba    -25275,-104 int:-25379 int:-25171 int:2628600 int:243 int:-3 int:-25344 int:-35 int:25309 bool:false bool:true bool:true bool:true bool:false bool:false
+assert_eq      Test1bb    -25275,-7016 int:-32291 int:-18259 int:177329400 int:3 int:-4227 int:-31744 int:-547 int:31197 bool:false bool:true bool:true bool:true bool:false bool:false
+assert_eq      Test1bc    -25275,-72552 int:-97827 int:47277 int:1833751800 int:0 int:-25275 int:-97280 int:-547 int:96733 bool:false bool:true bool:false bool:false bool:true bool:true
+assert_eq      Test1bd    -25275,-72552 long:-97827 long:47277 long:1833751800 long:0 long:-25275 long:-97280 long:-547 long:96733 bool:false bool:true bool:false bool:false bool:true bool:true
+
+assert_eq      Test1ca    40261,-104 int:40157 int:40365 int:-4187144 int:-387 int:13 int:40192 int:-35 int:-40227 bool:false bool:true bool:false bool:false bool:true bool:true
+assert_eq      Test1cb    40261,-7016 int:33245 int:47277 int:-282471176 int:-5 int:5181 int:33792 int:-547 int:-34339 bool:false bool:true bool:false bool:false bool:true bool:true
+assert_eq      Test1cc    40261,-72552 int:-32291 int:112813 int:1373951224 int:0 int:40261 int:33792 int:-66083 int:-99875 bool:false bool:true bool:false bool:false bool:true bool:true
+assert_eq      Test1cd    40261,-72552 long:-32291 long:112813 long:-2921016072 long:0 long:40261 long:33792 long:-66083 long:-99875 bool:false bool:true bool:false bool:false bool:true bool:true
+
+assert_eq      Test1da    40261,-104 long:40157 long:40365 long:-4187144 long:-387 long:13 long:40192 long:-35 long:-40227 bool:false bool:true bool:false bool:false bool:true bool:true
+assert_eq      Test1db    40261,-7016 long:33245 long:47277 long:-282471176 long:-5 long:5181 long:33792 long:-547 long:-34339 bool:false bool:true bool:false bool:false bool:true bool:true
+assert_eq      Test1dc    40261,-72552 long:-32291 long:112813 long:-2921016072 long:0 long:40261 long:33792 long:-66083 long:-99875 bool:false bool:true bool:false bool:false bool:true bool:true
+assert_eq      Test1dd    40261,-72552 long:-32291 long:112813 long:-2921016072 long:0 long:40261 long:33792 long:-66083 long:-99875 bool:false bool:true bool:false bool:false bool:true bool:true
+
+assert_eq      Test1ea    69,152 uint:221 uint:4294967213 uint:10488 uint:0 uint:69 uint:0 uint:221 uint:221 bool:false bool:true bool:true bool:true bool:false bool:false
+assert_eq      Test1eb    69,58520 uint:58589 uint:4294908845 uint:4037880 uint:0 uint:69 uint:0 uint:58589 uint:58589 bool:false bool:true bool:true bool:true bool:false bool:false
+assert_eq      Test1ec    69,4294894744 uint:4294894813 uint:72621 uint:4289961208 uint:0 uint:69 uint:0 uint:4294894813 uint:4294894813 bool:false bool:true bool:true bool:true bool:false bool:false
+assert_eq      Test1ed    69,18446744073709479064 ulong:18446744073709479133 ulong:72621 ulong:18446744073704545528 ulong:0 ulong:69 ulong:0 ulong:18446744073709479133 ulong:18446744073709479133 bool:false bool:true bool:true bool:true bool:false bool:false
+
+assert_eq      Test1fa    40261,152 uint:40413 uint:40109 uint:6119672 uint:264 uint:133 uint:0 uint:40413 uint:40413 bool:false bool:true bool:false bool:false bool:true bool:true
+assert_eq      Test1fb    40261,58520 uint:98781 uint:4294949037 uint:2356073720 uint:0 uint:40261 uint:33792 uint:64989 uint:31197 bool:false bool:true bool:true bool:true bool:false bool:false
+assert_eq      Test1fc    40261,4294894744 uint:4294935005 uint:112813 uint:1373951224 uint:0 uint:40261 uint:33792 uint:4294901213 uint:4294867421 bool:false bool:true bool:true bool:true bool:false bool:false
+assert_eq      Test1fd    40261,18446744073709479064 ulong:18446744073709519325 ulong:112813 ulong:18446744070788535544 ulong:0 ulong:40261 ulong:33792 ulong:18446744073709485533 ulong:18446744073709451741 bool:false bool:true bool:true bool:true bool:false bool:false
+
+assert_eq      Test1ga    40261,152 uint:40413 uint:40109 uint:6119672 uint:264 uint:133 uint:0 uint:40413 uint:40413 bool:false bool:true bool:false bool:false bool:true bool:true
+assert_eq      Test1gb    40261,58520 uint:98781 uint:4294949037 uint:2356073720 uint:0 uint:40261 uint:33792 uint:64989 uint:31197 bool:false bool:true bool:true bool:true bool:false bool:false
+assert_eq      Test1gc    40261,4294894744 uint:4294935005 uint:112813 uint:1373951224 uint:0 uint:40261 uint:33792 uint:4294901213 uint:4294867421 bool:false bool:true bool:true bool:true bool:false bool:false
+assert_eq      Test1gd    40261,18446744073709479064 ulong:18446744073709519325 ulong:112813 ulong:18446744070788535544 ulong:0 ulong:40261 ulong:33792 ulong:18446744073709485533 ulong:18446744073709451741 bool:false bool:true bool:true bool:true bool:false bool:false
+
+assert_eq      Test1ha    40261,152 ulong:40413 ulong:40109 ulong:6119672 ulong:264 ulong:133 ulong:0 ulong:40413 ulong:40413 bool:false bool:true bool:false bool:false bool:true bool:true
+assert_eq      Test1hb    40261,58520 ulong:98781 ulong:18446744073709533357 ulong:2356073720 ulong:0 ulong:40261 ulong:33792 ulong:64989 ulong:31197 bool:false bool:true bool:true bool:true bool:false bool:false
+assert_eq      Test1hc    40261,4294894744 ulong:4294935005 ulong:18446744069414697133 ulong:172916757288184 ulong:0 ulong:40261 ulong:33792 ulong:4294901213 ulong:4294867421 bool:false bool:true bool:true bool:true bool:false bool:false
+assert_eq      Test1hd    40261,18446744073709479064 ulong:18446744073709519325 ulong:112813 ulong:18446744070788535544 ulong:0 ulong:40261 ulong:33792 ulong:18446744073709485533 ulong:18446744073709451741 bool:false bool:true bool:true bool:true bool:false bool:false
+
+assert_eq      Test2a     31 int:-32 int:-31
+assert_eq      Test2b     26399 int:-26400 int:-26399
+assert_eq      Test2c     402614047 int:-402614048 int:-402614047
+assert_eq      Test2d     402614047 long:-402614048 long:-402614047
+assert_eq      Test2e     31 uint:4294967264 uint:4294967265
+assert_eq      Test2f     26399 uint:4294940896 uint:4294940897
+assert_eq      Test2g     402614047 uint:3892353248 uint:3892353249
+assert_eq      Test2h     402614047 ulong:18446744073306937568 ulong:18446744073306937569
+

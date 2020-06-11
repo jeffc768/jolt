@@ -1,0 +1,171 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test integer types.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    return 0
+}
+
+func Test1() {
+    // Test all possible combination of integer type operands to the binary
+    // operators.
+    AllBinOps<sbyte,  sbyte >("Test1aa")
+    AllBinOps<sbyte,  short >("Test1ab")
+    AllBinOps<sbyte,  int   >("Test1ac")
+    AllBinOps<sbyte,  long  >("Test1ad")
+
+    AllBinOps<short,  sbyte >("Test1ba")
+    AllBinOps<short,  short >("Test1bb")
+    AllBinOps<short,  int   >("Test1bc")
+    AllBinOps<short,  long  >("Test1bd")
+
+    AllBinOps<int  ,  sbyte >("Test1ca")
+    AllBinOps<int  ,  short >("Test1cb")
+    AllBinOps<int  ,  int   >("Test1cc")
+    AllBinOps<int  ,  long  >("Test1cd")
+
+    AllBinOps<long ,  sbyte >("Test1da")
+    AllBinOps<long ,  short >("Test1db")
+    AllBinOps<long ,  int   >("Test1dc")
+    AllBinOps<long ,  long  >("Test1dd")
+
+    AllBinOps<byte ,  byte  >("Test1ea")
+    AllBinOps<byte ,  ushort>("Test1eb")
+    AllBinOps<byte ,  uint  >("Test1ec")
+    AllBinOps<byte ,  ulong >("Test1ed")
+
+    AllBinOps<ushort, byte  >("Test1fa")
+    AllBinOps<ushort, ushort>("Test1fb")
+    AllBinOps<ushort, uint  >("Test1fc")
+    AllBinOps<ushort, ulong >("Test1fd")
+
+    AllBinOps<uint  , byte  >("Test1ga")
+    AllBinOps<uint  , ushort>("Test1gb")
+    AllBinOps<uint  , uint  >("Test1gc")
+    AllBinOps<uint  , ulong >("Test1gd")
+
+    AllBinOps<ulong , byte  >("Test1ha")
+    AllBinOps<ulong , ushort>("Test1hb")
+    AllBinOps<ulong , uint  >("Test1hc")
+    AllBinOps<ulong , ulong >("Test1hd")
+}
+
+template<T> class Printer {
+    static func Run(arg: T) {
+        @build(T == bool)    Print(" bool:")
+        @build(T == byte)    Print(" byte:")
+        @build(T == ushort)  Print(" ushort:")
+        @build(T == uint)    Print(" uint:")
+        @build(T == ulong)   Print(" ulong:")
+        @build(T == sbyte)   Print(" sbyte:")
+        @build(T == short)   Print(" short:")
+        @build(T == int)     Print(" int:")
+        @build(T == long)    Print(" long:")
+        Print(arg)
+    }
+}
+
+template<T1, T2, OP: char[]> class BinOp {
+    static func operator()() {
+        var v1: T1 = 40261
+        var v2: T2 = -72552
+        Printer<$(v1.OP~(v2))>.Run(v1.OP~(v2))
+    }
+}
+
+template<T1, T2> class AllBinOps {
+    static func operator()(testname: char[] const&) {
+        Print(testname)
+        Print(": ")
+
+        var v1: T1 = 40261
+        Print(v1)
+        Print(",")
+        var v2: T2 = -72552
+        Print(v2)
+
+        // FIXME: do shifts
+        BinOp<T1, T2, "operator +">()
+        BinOp<T1, T2, "operator -">()
+        BinOp<T1, T2, "operator *">()
+        BinOp<T1, T2, "operator /">()
+        BinOp<T1, T2, "operator %">()
+        BinOp<T1, T2, "operator &">()
+        BinOp<T1, T2, "operator |">()
+        BinOp<T1, T2, "operator ^">()
+        BinOp<T1, T2, "operator ==">()
+        BinOp<T1, T2, "operator !=">()
+        BinOp<T1, T2, "operator <">()
+        BinOp<T1, T2, "operator <=">()
+        BinOp<T1, T2, "operator >">()
+        BinOp<T1, T2, "operator >=">()
+
+        Print("\n")
+    }
+}
+
+func Test2() {
+    // Test all integer type operands against the unary operators.
+    AllUnOps<sbyte >("Test2a")
+    AllUnOps<short >("Test2b")
+    AllUnOps<int   >("Test2c")
+    AllUnOps<long  >("Test2d")
+    AllUnOps<byte  >("Test2e")
+    AllUnOps<ushort>("Test2f")
+    AllUnOps<uint  >("Test2g")
+    AllUnOps<ulong >("Test2h")
+}
+
+template<T, OP: char[]> class UnnOp {
+    static func operator()() {
+        var v: T = 402614047
+        Printer<$(v.OP~())>.Run(v.OP~())
+    }
+}
+
+template<T> class AllUnOps {
+    static func operator()(testname: char[] const&) {
+        Print(testname)
+        Print(": ")
+
+        // FIXME: apparently literals larger than 32-bits aren't working
+        var v: T = 402614047
+        Print(v)
+
+        UnnOp<T, "operator ~">()
+        UnnOp<T, "operator -">()
+
+        Print("\n")
+    }
+}

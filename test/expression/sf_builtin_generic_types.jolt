@@ -1,0 +1,111 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test built-in generic types.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    return 0
+}
+
+func Test1() {
+    // Verify equivalence of types generated with syntatic sugar and with
+    // generic types.  Also show that type expressions are true expressions,
+    // by using an idempotent type function X.
+    C1<Pointer, C2, X(C2)*>.Run("Test1")
+    C1<ConformantArray, C2, X(C2)[]>.Run("Test2")
+    C1<FixedArray<0..4>, C2, X(C2)[5]>.Run("Test3")
+
+    C3<SignedSubrange, 10, 54, 10 .. 54>.Run("Test4")
+    C3<UnsignedSubrange, 10, 54, uint(10) .. uint(54)>.Run("Test5")
+
+    C4<FixedArray, 5..9, C2, X(C2)[5..9]>.Run("Test6")
+}
+
+template<GT: template<X>, T, U> class C1 {
+    static func Run(name: char[] const&) {
+        Print(name)
+        Print("a: ")
+        @build(U == GT<T>)  Print("pass")
+        Print("\n")
+
+        Print(name)
+        Print("b: ")
+        @build(U == Apply(T))  Print("pass")
+        Print("\n")
+    }
+
+    class Apply {
+        static func operator()(t: type) -> type { GT<t> }
+    }
+}
+
+class C2 {
+    var f1: int
+}
+
+template<GT: template<X: long, Y: long>, LB: long, UB: long, U> class C3 {
+    static func Run(name: char[] const&) {
+        Print(name)
+        Print("a: ")
+        @build(U == GT<LB, UB>)  Print("pass")
+        Print("\n")
+
+        Print(name)
+        Print("b: ")
+        @build(U == Apply(LB, UB))  Print("pass")
+        Print("\n")
+    }
+
+    class Apply {
+        static func operator()(lb: long, ub: long) -> type { GT<lb, ub> }
+    }
+}
+
+template<GT: template<X, Y>, IT, ET, U> class C4 {
+    static func Run(name: char[] const&) {
+        Print(name)
+        Print("a: ")
+        @build(U == GT<IT, ET>)  Print("pass")
+        Print("\n")
+
+        Print(name)
+        Print("b: ")
+        @build(U == Apply(IT, ET))  Print("pass")
+        Print("\n")
+    }
+
+    class Apply {
+        static func operator()(it: type, et: type) -> type { GT<it, et> }
+    }
+}
+
+func X(t: type) -> type { t }

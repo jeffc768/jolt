@@ -1,0 +1,97 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// FIXME: due to current limitations, only values that fit a int can
+// be tested.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test_Decimal()
+    Test_Hexadecimal()
+    Test_Octal()
+    Test_Binary()
+    Test_Float()
+    Test_HexFloat()
+    return 0
+}
+
+func Test_Decimal() {
+    Print(  "dec_1: "); Print(1234567890)
+    Print("\ndec_2: "); Print(1_345_678_901)
+    Print("\ndec_3: "); Print(04_5_6)
+    Print("\ndec_4: "); Print(9876_5432)
+    Print("\ndec_5: "); Print(1___2___8______9__________________3)
+    Print("\n")
+}
+
+func Test_Hexadecimal() {
+    Print(  "hex_1: "); Print(0x100)
+    Print("\nhex_2: "); Print(0X1Ff)
+    Print("\nhex_3: "); Print(0X_10__000__000)
+    Print("\nhex_4: "); Print(0X_1__abc__DEF)
+    Print("\nhex_5: "); Print(0X_1__abc__DE0)
+    Print("\n")
+}
+
+func Test_Octal() {
+    Print(  "oct_1: "); Print(0o100)
+    Print("\noct_2: "); Print(0o_100_000)
+    Print("\noct_3: "); Print(0o177)
+    Print("\noct_4: "); Print(0o00000000000000000_____00000___00010)
+    Print("\n")
+}
+
+func Test_Binary() {
+    Print(  "bin_1: "); Print(0b1001)
+    Print("\nbin_2: "); Print(0B0011)
+    Print("\nbin_3: "); Print(0b1_0000_0000)
+    Print("\nbin_4: "); Print(0b1111)
+    Print("\n")
+}
+
+func Test_Float() {
+    Print(  "flt_1: "); Print(10.125)
+    Print("\nflt_2: "); Print(.04)
+    Print("\nflt_3: "); Print(5.63e+3)
+    Print("\nflt_4: "); Print(12___5.00__00E-3)
+    Print("\nflt_5: "); Print(87.)
+    Print("\nflt_6: "); Print(38.e2)
+    Print("\n")
+}
+
+func Test_HexFloat() {
+    Print(  "hft_1: "); Print(0xa.2)
+    Print("\nhft_2: "); Print(0x.4)
+    Print("\nhft_3: "); Print(0x3.2Dp+6)
+    Print("\nhft_4: "); Print(0x12___5.00__00P-3)
+    Print("\nhft_5: "); Print(0x57.)
+    Print("\nhft_6: "); Print(0x38.p2)
+    Print("\n")
+}

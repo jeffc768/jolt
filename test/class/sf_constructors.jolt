@@ -1,0 +1,266 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test constructor methods.
+
+// FIXME: The following do not yet work:
+//   * Construction of bases.
+//   * Forwarding to another constructor (":+: this = ...").
+//   * Execution of constructors for static fields and namespace globals.
+//   * No "mostDerived" flag argument.
+//   * Use of "_" to represent the type of field/var being constructed
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    Test4()
+    Test5()
+    return 0
+}
+
+func Test1() {
+    // Create objects, one of which is "simple" and the other isn't, and
+    // see if the default constructor executes.
+
+    var o1: C1a
+    var o2: C1b
+
+    Print(  "Test1a: "); Print(o1.f1)
+    Print("\nTest1b: "); Print(o2.f1.f1)
+                Print(" "); Print(o2.f2)
+                Print(" "); Print(o2.f3.f1)
+
+    // Create new objects, this time with an initializer.
+    
+    var o3 = C1a(111)
+    var o4 = C1b(222, 333, 444)
+
+    Print("\nTest1c: "); Print(o3.f1)
+    Print("\nTest1d: "); Print(o4.f1.f1)
+                Print(" "); Print(o4.f2)
+                Print(" "); Print(o4.f3.f1)
+
+    // And again, this time using named constructors.
+    
+    var o5 = C1a.cons(700)
+    var o6 = C1b.cons(800)
+
+    Print("\nTest1e: "); Print(o5.f1)
+    Print("\nTest1f: "); Print(o6.f1.f1)
+                Print(" "); Print(o6.f2)
+                Print(" "); Print(o6.f3.f1)
+    Print("\n")
+}
+
+class C1a {
+    var f1: int
+
+    this() {
+        :+: f1 = 582
+    }
+
+    this(x: int) {
+        :+: f1 = x
+    }
+
+    this cons(x: int) {
+        :+: f1 = x + 1
+    }
+}
+
+class C1b {
+    var f1: C1a
+    var f2: int
+    var f3: C1a
+
+    this() {
+        :+: f1
+        :+: f2 = 925
+        :+: f3
+        f3.f1 = f3.f1 + 1
+    }
+
+    this(a: int, b: int, c: int) {
+        :+: f1 = a
+        :+: f2 = b
+        :+: f3 = c
+    }
+
+    this cons(x: int) {
+        :+: f1(x)
+        :+: f2 = x + 1
+        :+: f3 cons(x + 1)
+    }
+}
+
+func Test2() {
+    // Test that missing field constructions are automatically inserted
+    // and in the correct order.
+
+    Print("Test2a: ")
+    m2()
+    Print("\n")
+}
+
+func m2() {
+    var o2: C2a
+    Print(" ")
+    // Output from destructor follows after above space
+}
+
+class C2a {
+    var fa: C2b<"A">
+    var fb: C2b<"B">
+    var fc: C2b<"C">
+    var fd: C2b<"D">
+    var fe: C2b<"E">
+    var ff: C2b<"F">
+    var fg: C2b<"G">
+    var fh: C2b<"H">
+    var fi: C2b<"I">
+    var fj: C2b<"J">
+
+    this() {
+        :+: fa
+        :+: fb
+        :+: fc
+        :+: fj
+    }
+
+    this cons1() {
+        :+: fd
+        :+: fe
+        :+: fj
+    }
+
+    this cons2() {
+        :+: fa
+        :+: fb
+        :+: fg
+        :+: fi
+    }
+}
+
+template<LABEL: char[] = "x"> class C2b {
+    var f: int
+
+    this() {
+        :+: f = 0
+        Print(LABEL)
+    }
+
+    ~this() {
+        Print(LABEL)
+    }
+}
+
+func Test3() {
+    // Test that field initializers are used when (and only when) a field
+    // is implicitly constructed.
+
+    var o: C3
+    Print(  "Test3a: ")
+    Print(o.f1); Print(" ")
+    Print(o.f2.f1); Print(" ")
+    Print(o.f3.f1);
+
+    var x = C3.cons()
+    Print("\nTest3b: ")
+    Print(x.f1); Print(" ")
+    Print(x.f2.f1); Print(" ")
+    Print(x.f3.f1);
+    Print("\n")
+}
+
+class C3 {
+    var f1: int = 627
+    var f2 = C1a.cons(629)
+    var f3: C1a
+
+    this() {
+        :+: f2(629)
+    }
+
+    this cons() {
+        :+: f1 = 999
+    }
+}
+
+func Test4() {
+    // Test auto-generated default constructor.
+    var o1: C4
+    Print(  "Test4a: ")
+    Print(o1.f1); Print(" ")
+    Print(o1.f2.f1); Print(" ")
+    Print(o1.f3.f1);
+
+    // Test auto-generated copy constructor.
+    o1.f1 = 184
+    o1.f2.f1 = 401
+    var o2: C4 = o1
+    Print("\nTest4b: ")
+    Print(o2.f1); Print(" ")
+    Print(o2.f2.f1); Print(" ")
+    Print(o2.f3.f1);
+    Print("\n")
+}
+
+class C4 {
+    var f1: int = 627
+    var f2 = C1a.cons(629)
+    var f3: C1a
+}
+
+func Test5() {
+    // Test object construction as rvalues in an expression.
+    var o1 = C1a.cons(843)
+    Print("\nTest5a: "); Print(o1.f1)
+
+    // Right-hand side of assignment.
+    o1 = C1a.cons(878)
+    Print("\nTest5b: "); Print(o1.f1)
+
+    // As rvalue argument to method.
+    Print("\nTest5c: "); Print(m5a(C1a.cons(921)))
+
+    // As return value of method.
+    Print("\nTest5d: "); Print(m5a(m5b(971)))
+    Print("\n")
+}
+
+func m5a(arg: C1a) -> int {
+    return arg.f1
+}
+
+func m5b(x: int) -> C1a {
+    return C1a.cons(x)
+}

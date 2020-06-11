@@ -1,0 +1,129 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test arrays.
+//
+// Arrays are barely working at this point, in particular:
+//  * Only operators on arrays implemented are [] and size.
+//  * Only an int size may be used as an index type.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    return 0
+}
+
+func Test1() {
+    Print(  "Test1a: ")
+    var ary = int[10](3214, 9568)
+    ary[2] = 6476
+    ary[3] = 7246
+    ary[4] = 4296
+    ary[6] = 5936
+    var i  = 0
+    while i < 10 {
+        m1a(ary, i)
+        i = i + 1
+    }
+
+    Print("\nTest1b: ")
+    m1b(ary, 2)
+
+    Print("\nTest1c: ")
+    m1c(ary, 2)
+    Print("\n")
+}
+
+func m1a(ary: int[10]&, idx: int) {
+  Print(ary[idx])
+  Print(" ")
+}
+
+func m1b(ary: int[]&, idx: int) {
+  Print(ary[idx])
+}
+
+func m1c(ary: int[]&, idx: int) {
+  m1b(ary, idx + 2)
+}
+
+func Test2() {
+    var ary: int[45]
+    Print(  "Test2a: ")
+    Print(#ary)
+
+    Print("\nTest2b: ")
+    m2b(ary)
+
+    Print("\nTest2c: ")
+    m2c(ary)
+
+    Print("\nTest2d: ")
+    m2d(ary)
+    Print("\n")
+}
+
+func m2b(ary: int[45]&) {
+  Print(#ary)
+}
+
+func m2c(ary: int[]&) {
+  Print(#ary)
+}
+
+func m2d(ary: int[]&) {
+  m2c(ary)
+}
+
+func Test3() {
+    Print(  "Test3a: ")
+    m3a()
+    Print("\n")
+}
+
+func m3a() {
+    var ary: C3a[5]
+    Print(ary[1].f1)
+}
+
+class C3a {
+    var f1: int
+
+    this() {
+        :+: f1 = 582
+        Print("cons ")
+    }
+
+    ~this() {
+        Print(" des")
+    }
+}

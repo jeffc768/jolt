@@ -1,0 +1,51 @@
+# Copyright (c) 2014, Jeff Cohen
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+source sf_exit.jolt
+
+assert_eq      Test1a     7378
+assert_eq      Test1b     4783
+assert_eq      Test1c     6362
+assert_eq      Test1d     7376
+assert_eq      Test1e     7577
+assert_eq      Test1f     4782
+assert_eq      Test1g     7368
+assert_eq      Test1h     4773
+assert_eq      Test1i     6352
+assert_eq      Test1j     7366
+assert_eq      Test1k     7567
+assert_eq      Test1l     4772
+
+assert_eq      Test2a     10601
+assert_eq      Test2b     20603
+assert_eq      Test2c     30103
+assert_eq      Test2d     3
+
+assert_eq      Test3a     103
+assert_eq      Test3b     301
+assert_eq      Test3c     203
+
+assert_eq      Test4a     38 60 16 66 90 91

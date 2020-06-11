@@ -1,0 +1,143 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test the new and delete operators.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    return 0
+}
+
+func Test1() {
+    Print("Test1: ")
+
+    var p1: int* = new int
+    var p2: int* = new int()
+    var p3: int* = new int(5)
+
+    Print(*p1)
+    Print(" ")
+    Print(*p2)
+    Print(" ")
+    Print(*p3)
+    Print("\n")
+
+    delete p1
+    delete p2
+    delete p3
+}
+
+func Test2() {
+    Print("Test2: ")
+
+    var p1: C2* = new C2
+    var p2: C2* = new C2(11)
+    var p3: C2* = new C2(5, 21)
+
+    Print(p1->f)
+    Print(" ")
+    Print(p2->f)
+    Print(" ")
+    Print(p3->f)
+    Print(" ")
+
+    delete p1
+    delete p2
+    delete p3
+    Print("\n")
+}
+
+class C2 {
+    var f: int
+
+    this() {
+        Print("new1 ");
+    }
+
+    this(a: int) {
+        :+: f  = a
+        Print("new2 ")
+    }
+
+    this(a: int, b: int) {
+        :+: f = a + b
+        Print("new3 ")
+    }
+
+    ~this() {
+        Print("del")
+        Print(f)
+        Print(" ")
+    }
+}
+
+func Test3() {
+    var p1: int[]* = new int[](2, 3, 5, 7, 11, 13, 17)
+    var p2 = newary(23)
+
+    Print("Test3a: ")
+    parray(*p1)
+
+    Print("\nTest3b: ")
+    parray(*p2)
+
+    delete p1
+    delete p2
+
+    Print("\nTest3c: ")
+    var p3: C2[]* = new C2[3] // FIXME: nested initializer lists
+    (*p3)[0].f = 87
+    (*p3)[1].f = 50
+    (*p3)[2].f = 26
+    Print("size=")
+    Print(#*p3)
+    Print(" ")
+    delete p3
+
+    Print("\n")
+}
+
+func newary(size: int) -> int[]* { new int[size](101, 201, 301) }
+
+func parray(ary: int[]&) {
+    Print(#ary)
+    Print(" ")
+
+    var i: int = 1
+    Print(ary[0])
+    while (i < #ary) {
+        Print(":")
+        Print(ary[i])
+        i = i + 1
+    }
+}

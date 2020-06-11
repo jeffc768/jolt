@@ -1,0 +1,179 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Note that the compound statements that can be interated already test for
+// being nexted from every part that can be nexted in their own tests, and
+// that won't be duplicated here.  The flavor here is on all the variations
+// next itself and with more complicated, nested compound statements.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    return 0
+}
+
+func Test1() {
+    // Test various syntactic forms
+
+    // Just plain next
+    var x: int
+    while x == 0 {
+        x = 7378
+        next
+        x = 6363
+    }
+    Print(  "Test1a: "); Print(x)
+
+    // Next with a value
+    // FIXME: need case statement: Print("\nTest1b: "); Print(...)
+
+    // Next conditionally
+    x = 0
+    while x == 0 {
+        x = 7377
+        next if false
+        x = 6362
+    }
+    Print("\nTest1c: "); Print(x)
+    x = 0
+    while x == 0 {
+        x = 7376
+        next if true
+        x = 6361
+    }
+    Print("\nTest1d: "); Print(x)
+
+    // Next conditionally with value
+    // FIXME: need case statement: Print("\nTest1e: "); Print(... if true)
+    // FIXME: need case statement: Print("\nTest1f: "); Print(... if false)
+
+    // Next with label
+    x = 0
+
+  /L1/
+    while x == 0 {
+        x = 7368
+        next /L1/
+        x = 6353
+    }
+    Print("\nTest1g: "); Print(x)
+
+    // Next with a value
+    // FIXME: need case statement: Print("\nTest1h: "); Print(... =)
+
+    // Next conditionally with label
+    x = 0
+
+  /L3/
+    while x == 0 {
+        x = 7367
+        next /L3/ if false
+        x = 6352
+    }
+    Print("\nTest1i: "); Print(x)
+    x = 0
+
+  /L4/
+    while x == 0 {
+        x = 7366
+        next /L4/ if true
+        x = 6351
+    }
+    Print("\nTest1j: "); Print(x)
+
+    // Next conditionally with value and label
+    // FIXME: need case statement: Print("\nTest1k: "); Print(... = if false)
+    // FIXME: need case statement: Print("\nTest1l: "); Print(... = if true)
+
+    Print("\n")
+}
+
+func Test2() {
+    // Test nexting from nested compound statements.
+
+    Print(  "Test2a: "); Print(p2(1))
+    Print("\nTest2b: "); Print(p2(2))
+    Print("\nTest2c: "); Print(p2(3))
+    Print("\nTest2d: "); Print(p2(4))
+    Print("\n")
+}
+
+func p2(n: int) -> int {
+    var x: int = 0
+    /L1/ while x < 50 {
+        var y: int = 0
+        x = x + 10
+        /L2/ while y < 3 {
+            y = y + 1
+            if n == 1 {
+                next // equivalent to : L2
+            } else if n == 2 {
+                next /L2/
+            } else if n == 3 {
+                next /L1/
+            }
+            x = x + 2
+        } else {
+            x = x - y
+        }
+    }
+    return x
+}
+
+func Test3() {
+    // Be extra cruel and exit from within an next statement.
+
+    Print(  "Test3a: "); Print(p3(1))
+    Print("\nTest3b: "); Print(p3(2))
+    Print("\nTest3c: "); Print(p3(3))
+    Print("\n")
+}
+
+func p3(n: int) -> int {
+    var x: int = 0
+    var y: int = 0
+
+  /L/
+    while y < 8 {
+        y = y + 1
+        while x < 5 {
+            x = x + 1
+            next if {exit if n == 1; next /L/ if n == 2; x >= 3}
+            y = y + 10
+        } else {
+            return x + y
+        }
+        y = y + 1
+    } else {
+        y * x
+    }
+}

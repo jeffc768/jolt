@@ -1,0 +1,156 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    return 0
+}
+
+func Test1() {
+    // Use every operator that may legally follow an operator keyword.
+
+    // Yes, we're using operator X as a variable name, not as a func.
+    // This would be inexcusably bad practice in real code, but it goes
+    // to show that syntatically it *is* an identifier and can be used
+    // anywhere an identifier is expected.
+
+    var operator %        : int = 1
+    var operator %=       : int = 2
+    var operator &        : int = 3
+    var operator &=       : int = 4
+    var operator ()       : int = 5
+    var operator #        : int = 6
+    var operator *        : int = 7
+    var operator *=       : int = 10
+    var operator ++!      : int = 14
+    var operator ++       : int = 13
+    var operator +        : int = 12
+    var operator +=       : int = 15
+    var operator --!      : int = 18
+    var operator --       : int = 17
+    var operator -        : int = 16
+    var operator -=       : int = 19
+    var operator ->       : int = 20
+    var operator ..       : int = 21
+    var operator /        : int = 22
+    var operator /=       : int = 23
+    var operator =        : int = 24
+    var operator <        : int = 25
+    var operator <<       : int = 26
+    var operator <<=      : int = 27
+    var operator <=       : int = 28
+    var operator !=       : int = 30
+    var operator ==       : int = 31
+    var operator >        : int = 32
+    var operator >=       : int = 33
+    var operator >>       : int = 34
+    var operator >>=      : int = 35
+    var operator []       : int = 38
+    var operator ^        : int = 39
+    var operator ^=       : int = 40
+    var operator const    : int = 43
+    var operator delete   : int = 44
+    var operator in       : int = 45
+    var operator mutable  : int = 46
+    var operator new      : int = 47
+    var operator !        : int = 48
+    var operator |        : int = 54
+    var operator |=       : int = 55
+    var operator ~        : int = 56
+
+    Print(  "Test_%: ");       Print("operator %"~)
+    Print("\nTest_%=: ");      Print("operator %="~)
+    Print("\nTest_&: ");       Print("operator &"~)
+    Print("\nTest_&=: ");      Print("operator &="~)
+    Print("\nTest_(): ");      Print("operator ()"~)
+    Print("\nTest_#: ");       Print("operator #"~)
+    Print("\nTest_*: ");       Print("operator *"~)
+    Print("\nTest_*=: ");      Print("operator *="~)
+    Print("\nTest_+: ");       Print("operator +"~)
+    Print("\nTest_++: ");      Print("operator ++"~)
+    Print("\nTest_++!: ");     Print("operator ++!"~)
+    Print("\nTest_+=: ");      Print("operator +="~)
+    Print("\nTest_-: ");       Print("operator -"~)
+    Print("\nTest_--: ");      Print("operator --"~)
+    Print("\nTest_--!: ");     Print("operator --!"~)
+    Print("\nTest_-=: ");      Print("operator -="~)
+    Print("\nTest_->: ");      Print("operator ->"~)
+    Print("\nTest_..: ");      Print("operator .."~)
+    Print("\nTest_/: ");       Print("operator /"~)
+    Print("\nTest_/=: ");      Print("operator /="~)
+    Print("\nTest_=: ");       Print("operator ="~)
+    Print("\nTest_<: ");       Print("operator <"~)
+    Print("\nTest_<<: ");      Print("operator <<"~)
+    Print("\nTest_<<=: ");     Print("operator <<="~)
+    Print("\nTest_<=: ");      Print("operator <="~)
+    Print("\nTest_!=: ");      Print("operator !="~)
+    Print("\nTest_==: ");      Print("operator =="~)
+    Print("\nTest_>: ");       Print("operator >"~)
+    Print("\nTest_>=: ");      Print("operator >="~)
+    Print("\nTest_>>: ");      Print("operator >>"~)
+    Print("\nTest_>>=: ");     Print("operator >>="~)
+    Print("\nTest_[]: ");      Print("operator []"~)
+    Print("\nTest_^: ");       Print("operator ^"~)
+    Print("\nTest_^=: ");      Print("operator ^="~)
+    Print("\nTest_const: ");   Print("operator const"~)
+    Print("\nTest_delete: ");  Print("operator delete"~)
+    Print("\nTest_in: ");      Print("operator in"~)
+    Print("\nTest_mutable: "); Print("operator mutable"~)
+    Print("\nTest_new: ");     Print("operator new"~)
+    Print("\nTest_!: ");       Print("operator !"~)
+    Print("\nTest_|: ");       Print("operator |"~)
+    Print("\nTest_|=: ");      Print("operator |="~)
+    Print("\nTest_~: ");       Print("operator ~"~)
+    Print("\n")
+}
+
+func Test2() {
+    // Make sure various types of white space following the operator
+    // keyword have no effect.
+
+    var operator /   : int = 11
+    var operator()   : int = 12
+
+    var a: int = operator/ + operator /* comment */ /
+    var b: int = operator
+                                / * operator (/*
+
+                                                    multi-line comment */ )
+
+    // Note that in the above, a semicolon is still inserted after a '/'
+    // at the end of a line.  Normally, an operator at eol inhibits semi-
+    // colon insertion.
+
+    Print(  "Test2a: "); Print(a)
+    Print("\nTest2b: "); Print(b)
+    Print("\n")
+}

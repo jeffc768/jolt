@@ -1,0 +1,137 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test thin reference operations.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    Test3()
+    Test4()
+    return 0
+}
+
+func Test1() {
+    Print(  "Test1a: ")
+    var v1: int = 45
+    var r: int& = v1
+    Print(r)
+
+    Print("\nTest1b: ")
+    var p: int* = &r
+    Print(*p)
+
+    Print("\nTest1c: ")
+    *p = 36
+    Print(v1)
+    Print(":")
+    Print(r)
+
+    Print("\nTest1d: ")
+    var s: int& = *p
+    v1 = 23
+    Print(v1)
+    Print(":")
+    Print(r)
+    Print(":")
+    Print(s)
+
+    Print("\nTest1e: ")
+    var t: int& = s
+    Print(t)
+    v1 = 76
+    Print(":")
+    Print(t)
+    Print("\n")
+}
+
+func Test2() {
+    Print(  "Test2a: ")
+    var v1: int = 75
+    var p: int* = &v1
+    var q: int*& = p
+    Print(*xyz(q))
+
+    Print("\nTest2b: ")
+    *xyz(q) = 23
+    Print(v1)
+
+    Print("\nTest2c: ")
+    var v2: int = 87
+    var p2: int* = &v2
+    var q2: int*& = p2
+    q = q2
+    Print(*q)
+    Print(":")
+    Print(*q2)
+
+    Print("\nTest2d: ")
+    *q = *q + 1
+    *q2 = *q2 - 5
+    Print(v1)
+    Print(":")
+    Print(v2)
+
+    Print("\n")
+}
+
+func xyz(p: int*) -> int* { p }
+
+func Test3() {
+    Print(  "Test3a: ")
+    var v1: int = 31
+    var p: int* = &v1
+    var q: int& = *p
+    Print(q)
+
+    Print("\nTest3b: ")
+    v1 = v1 - 10
+    Print(q)
+
+    Print("\n")
+}
+
+func Test4() {
+    Print(  "Test4a: ")
+    var r: int& = 10
+    Print(r)
+
+    Print("\nTest4b: ")
+    var s: int& = m4a(r + 4)
+    r = 87
+    Print(s)
+    Print(":")
+    Print(r)
+    
+    Print("\n")
+}
+
+func m4a(x: int) -> int { x * 3 }

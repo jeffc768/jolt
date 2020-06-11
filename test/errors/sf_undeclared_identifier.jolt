@@ -1,0 +1,90 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test undeclared identifier errors.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    const c = constexpr()
+
+    // undeclared identifier: bad
+    // FIXME: should this error be repeated four times?
+    var v1: bad
+    var v2: bad*
+    var v3: bad[5]
+    var v4: bad[]&
+
+    // The above variables are all undeclared.  This won't produce cascading
+    // errors, but the compiler shouldn't choke on it either.
+    var v5: int = v1 + v2 + v3 + v4
+
+    // Use undeclared identifier in initializer.
+    var v6: int = bad
+
+    // FIXME: should not produce an error since there's a bad signature?
+    m1(10)
+
+    *bad[] == new bad[3]
+
+    return 0
+}
+
+func constexpr() -> int {
+    // This should execute at compile time despite the other compilation
+    // errors in RunTests.
+    Print("Test1a: pass\n")
+
+    // Undeclared identifier must not cause an error in unbuilt code.
+    @build(false)  var v: int = bad
+    @build(true)   var v: int = 5346
+    Print("Test1b: ")
+    Print(v)
+    Print("\n")
+    return 0
+}
+
+func m1(arg: bad) {
+}
+
+class C1 {
+    var f1: bad
+
+    this() {
+        :+: f1 = 582
+    }
+}
+
+class C2: bad {
+}
+
+// FIXME: internal error
+//template<bad T> class C3 {
+//   T f1
+//end

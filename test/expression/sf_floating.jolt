@@ -1,0 +1,113 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test floating-point types.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    return 0
+}
+
+func Test1() {
+    // Test all possible combination of floating-point type operands to the
+    // binary operators.
+    AllBinOps<float , float >("Test1aa")
+    AllBinOps<float , double>("Test1ab")
+
+    AllBinOps<double, float >("Test1ba")
+    AllBinOps<double, double>("Test1bb")
+}
+
+func PrintValue(v: float)  { Print(" float:");  Print(v) }
+func PrintValue(v: double) { Print(" double:"); Print(v) }
+func PrintValue(v: bool)   { Print(" bool:");   Print(v) }
+
+template<T1, T2, OP: char[]> class BinOp {
+    static func operator()() {
+        var v1: T1 = 8.0
+        var v2: T2 = -3.0
+        PrintValue(v1.OP~(v2))
+    }
+}
+
+template<T1, T2> class AllBinOps {
+    static func operator()(testname: char[] const&) {
+        Print(testname)
+        Print(": ")
+
+        var v1: T1 = 8.0
+        Print(v1)
+        Print(",")
+        var v2: T2 = -3.
+        Print(v2)
+
+        BinOp<T1, T2, "operator +">()
+        BinOp<T1, T2, "operator -">()
+        BinOp<T1, T2, "operator *">()
+        BinOp<T1, T2, "operator /">()
+        BinOp<T1, T2, "operator ==">()
+        BinOp<T1, T2, "operator !=">()
+        BinOp<T1, T2, "operator <">()
+        BinOp<T1, T2, "operator <=">()
+        BinOp<T1, T2, "operator >">()
+        BinOp<T1, T2, "operator >=">()
+
+        Print("\n")
+    }
+}
+
+func Test2() {
+    // Test all floating-point type operands against the unary operators.
+    AllUnOps<float >("Test2a")
+    AllUnOps<double>("Test2b")
+}
+
+template<T, OP: char[]> class UnnOp {
+    static func operator()() {
+        var v: T = 456.0
+        PrintValue(v.OP~())
+    }
+}
+
+template<T> class AllUnOps {
+    static func operator()(testname: char[] const&) {
+        Print(testname)
+        Print(": ")
+
+        var v: T = 456.
+        Print(v)
+
+        UnnOp<T, "operator -">()
+
+        Print("\n")
+    }
+}

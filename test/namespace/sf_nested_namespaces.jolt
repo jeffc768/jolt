@@ -1,0 +1,86 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test nested namespaces.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    return 0
+}
+
+func Test1() {
+    // Test uses of identifiers in nested namespaces.
+
+    Print(  "Test1a: "); Print(A.B.C.D.c)
+    Print("\nTest1b: "); Print(A.B.C.p(10, 20))
+    Print("\nTest1c: "); Print(A.B.p(10, 20))
+    Print("\nTest1d: "); Print(A.p(10, 20))
+    Print("\n")
+}
+
+func Test2() {
+    // Test uses of identifiers relative to parent namespaces.
+
+    Print("Test2a: ")
+    Print(A.B.C.D.Z)
+    Print("\n")
+}
+
+namespace A.B.C.D {
+    const c = p(10, 20)
+    const Z = C.X * B.X * A.X + A.B.C.X
+}
+
+namespace A {
+    namespace B {
+        namespace C {
+            namespace D {
+                func p(a: int, b: int) -> int { a + b + X }
+            }
+
+            func p(a: int, b: int) -> int { a - b - D.X }
+            const X = 2
+        }
+
+        func p(a: int, b: int) -> int { a * b + C.D.X }
+        const X = 3
+    }
+
+    func p(a: int, b: int) -> int { b / a + B.C.D.X }
+    const X = 4
+}
+
+namespace A.B {
+    namespace C.D {
+        const X = 1
+    }
+}

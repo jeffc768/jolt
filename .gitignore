@@ -1,0 +1,17 @@
+*.a
+*.o
+*.out
+*.obj
+*.lib
+*.exe
+.DS_Store
+Debug
+Release
+build/macos/jolt/llvm-config.xcconfig
+build/macos/jolt/jolt.xcodeproj/project.xcworkspace/xcuserdata
+build/macos/jolt/jolt.xcodeproj/xcuserdata
+build/macos/xcode.products.dir
+frontend/parser/JoltParser.h
+frontend/parser/JoltParser.cpp
+frontend/parser/JoltParser.output
+frontend/parser/JoltScanner.cpp

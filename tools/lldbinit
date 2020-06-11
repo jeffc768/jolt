@@ -1,0 +1,15 @@
+type summary add -w jolt -s "{${var.m_file}:${var.m_line}:${var.m_col}}" Location
+type summary add -w jolt -s "${var.m_text%s}" String
+type summary add -w jolt -s "Field ${var.m_name} ${var.m_location}" "Field *"
+type summary add -w jolt -s "Method ${var.m_name} ${var.m_location}" "Method *"
+type summary add -w jolt -s "MethodSet ${var.m_name} ${var.m_location}" "MethodSet *"
+type summary add -w jolt -s "Class ${var.m_name} ${var.m_location}" "Class *"
+type summary add -w jolt -s "Var ${var.m_name} ${var.m_location}" "Var *"
+type summary add -w jolt "Object *" -o "loc = valobj.GetChildMemberWithName('m_location').GetSummary(); k = valobj.type.GetPointeeType().GetDisplayTypeName(); return '%(k)s %(loc)s' % locals()"
+type summary add -w jolt "Expr *" -o "ty = valobj.GetChildMemberWithName('m_type').GetSummary(); loc = valobj.GetChildMemberWithName('m_location').GetSummary(); k = valobj.type.GetPointeeType().GetDisplayTypeName(); return '%(k)s %(ty)s %(loc)s' % locals()"
+type summary add -w jolt Type -o "o = valobj.GetChildMemberWithName('m_offset').GetValue(); k = valobj.GetChildMemberWithName('m_kind').GetValue(); r = valobj.GetChildMemberWithName('m_ref').GetValue(); c = valobj.GetChildMemberWithName('m_const').GetValue(); r = 'LLDBFormatType(%(o)s, %(k)s, %(r)s, %(c)s)' % locals(); return valobj.GetProcess().GetSelectedThread().GetSelectedFrame().EvaluateExpression(r).GetSummary()"
+type category enable jolt
+
+
+b Verify.cpp:32
+b Message.cpp:151

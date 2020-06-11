@@ -1,0 +1,94 @@
+// Copyright (c) 2014, Jeff Cohen
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Test bool type.
+
+func Main() -> int {
+    const ct = RunTests()
+    return ct + RunTests()
+}
+
+func RunTests() -> int {
+    Test1()
+    Test2()
+    return 0
+}
+
+func Test1() {
+    BinOp<op_and>("Test1a:")
+    BinOp<op_or >("Test1b:")
+    BinOp<op_xor>("Test1c:")
+    BinOp<op_eq >("Test1d:")
+    BinOp<op_ne >("Test1e:")
+    BinOp<op_lt >("Test1f:")
+    BinOp<op_le >("Test1g:")
+    BinOp<op_gt >("Test1h:")
+    BinOp<op_ge >("Test1i:")
+}
+
+template<OP: namespace> class BinOp {
+    static func operator()(name: char[] const&) {
+        Print(name)
+        Run(false, false)
+        Run(false, true)
+        Run(true, false)
+        Run(true, true)
+        Print("\n")
+    }
+
+    static func Run(a: bool, b: bool) {
+        if OP.op(a, b) {
+            Print("  true")
+        } else {
+            Print(" false")
+        }
+    }
+}
+
+namespace op_and { func op(a: bool, b: bool) = a & b  }
+namespace op_or  { func op(a: bool, b: bool) = a | b  }
+namespace op_xor { func op(a: bool, b: bool) = a ^ b  }
+namespace op_eq  { func op(a: bool, b: bool) = a == b }
+namespace op_ne  { func op(a: bool, b: bool) = a != b }
+namespace op_lt  { func op(a: bool, b: bool) = a < b  }
+namespace op_le  { func op(a: bool, b: bool) = a <= b }
+namespace op_gt  { func op(a: bool, b: bool) = a > b  }
+namespace op_ge  { func op(a: bool, b: bool) = a >= b }
+
+func Test2() {
+    Print("Test2:")
+    m2(false)
+    m2(true)
+    Print("\n")
+}
+
+func m2(a: bool) {
+    if !a {
+        Print("  true")
+    } else {
+        Print(" false")
+    }
+}

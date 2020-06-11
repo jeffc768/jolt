@@ -1,0 +1,75 @@
+# Copyright (c) 2014, Jeff Cohen
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+source sf_operator.jolt
+
+assert_eq      Test_%     1
+assert_eq      Test_%=    2
+assert_eq      Test_&     3
+assert_eq      Test_&=    4
+assert_eq      Test_()    5
+assert_eq      Test_#     6
+assert_eq      Test_*     7
+assert_eq      Test_*=    10
+assert_eq      Test_+     12
+assert_eq      Test_++    13
+assert_eq      Test_++!   14
+assert_eq      Test_+=    15
+assert_eq      Test_-     16
+assert_eq      Test_--    17
+assert_eq      Test_--!   18
+assert_eq      Test_-=    19
+assert_eq      Test_->    20
+assert_eq      Test_..    21
+assert_eq      Test_/     22
+assert_eq      Test_/=    23
+assert_eq      Test_=     24
+assert_eq      Test_<     25
+assert_eq      Test_<<    26
+assert_eq      Test_<<=   27
+assert_eq      Test_<=    28
+assert_eq      Test_!=    30
+assert_eq      Test_==    31
+assert_eq      Test_>     32
+assert_eq      Test_>=    33
+assert_eq      Test_>>    34
+assert_eq      Test_>>=   35
+assert_eq      Test_[]    38
+assert_eq      Test_^     39
+assert_eq      Test_^=    40
+assert_eq      Test_const 43
+assert_eq      Test_delete 44
+assert_eq      Test_in    45
+assert_eq      Test_mutable 46
+assert_eq      Test_new   47
+assert_eq      Test_!     48
+assert_eq      Test_|     54
+assert_eq      Test_|=    55
+assert_eq      Test_~     56
+
+assert_eq      Test2a     22
+assert_eq      Test2b     132
+

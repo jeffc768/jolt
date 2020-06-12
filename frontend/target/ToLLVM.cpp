@@ -444,7 +444,7 @@ llvm::Type *LLVMTarget::LLVMType(Type t) {
     case tk_enum:
       return LLVMType(t.AsSubrange());
     case tk_array:
-      if (t.IndexType().IsKnown())
+      if (t.IndexType())
         return llvm::ArrayType::get(LLVMType(t.ElementType()),
                                     t.IndexType().Cardinality());
       else

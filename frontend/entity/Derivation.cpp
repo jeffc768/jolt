@@ -288,7 +288,7 @@ bool ValidateBindingType(Value *arg, Type t) {
 
       Type u2 = u.IndexType();
       Type v2 = v.IndexType();
-      verify(!u2.IsKnown() || !v2.IsKnown() || u2 == v2);
+      verify(!u2 || !v2 || u2 == v2);
     }
     return true;
 }

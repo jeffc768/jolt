@@ -268,7 +268,7 @@ Node *Apply::ResolveType_(Context &ctx) {
   }
 
   // If any are valueless, then propagate upwards.
-  if (m_type.IsKnown()) {
+  if (m_type) {
     if (m_type == Type::Transfers()) {
       m_type = Type::Suppress();
       ctx.m_error = true;
@@ -366,7 +366,7 @@ Node *Apply::ResolveType_(Context &ctx) {
 
     // Check for immediate expansion; it's requested if the above did not set
     // a type for this node.
-    if (!m_type.IsKnown()) {
+    if (!m_type) {
       if (!WrapArguments(ctx, false))
         goto error;
       return m_macro->Run(this, ctx)->ResolveType(ctx);

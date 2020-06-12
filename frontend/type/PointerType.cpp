@@ -327,7 +327,7 @@ namespace {
           verify((t.BaseType() == tk_class && u.BaseType() == tk_class) ||
                  (t.BaseType() == tk_array && u.BaseType() == tk_array &&
                   t.BaseType().ElementType() == u.BaseType().ElementType() &&
-                  !t.BaseType().IndexType().IsKnown()) ||
+                  !t.BaseType().IndexType()) ||
                  t.BaseType() == u.BaseType().Const());
           rv = new PointerCast(t, rv);
         }

@@ -151,13 +151,13 @@ Node *Member::ResolveType_(Context &ctx) {
 
   // Look for valueless types.  If member has a type at all, it's because
   // Ident node failed to evaluate a name macro.
-  verify(!m_member->m_type.IsKnown() || m_member->m_type == tk_valueless);
+  verify(!m_member->m_type || m_member->m_type == tk_valueless);
   if (m_object->m_type == tk_valueless) {
-    if (m_member->m_type.IsKnown())
+    if (m_member->m_type)
       m_type = Type::Join(m_object->m_type, m_member->m_type);
     else
       m_type = m_object->m_type;
-  } else if (m_member->m_type.IsKnown()) {
+  } else if (m_member->m_type) {
     m_type = m_member->m_type;
   }
 

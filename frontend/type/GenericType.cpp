@@ -57,7 +57,7 @@ namespace {
       for (size_t i = 1; i < argcnt; i++) {
         Type t = d->m_type.TypeOf(jos.size());
         Value *v = nullptr;
-        if (t == tk_array && !t.IndexType().IsKnown()) {
+        if (t == tk_array && !t.IndexType()) {
           void *argdata = args[i].AsAddr();
           size_t cnt = args[++i].AsSizeT();
           t = t.SetIndexType(cnt);
@@ -145,7 +145,7 @@ namespace {
 
         // If the generic parameter is a conformant array, force the formal
         // type to a const reference.
-        if (u == tk_array && !u.IndexType().IsKnown())
+        if (u == tk_array && !u.IndexType())
           u = u.LValueRef().Const();
 
         an->m_formalTypes[i] = u;

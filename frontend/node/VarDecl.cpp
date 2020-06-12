@@ -88,7 +88,7 @@ VarDecl::VarDecl(Var *ve, Node *e, Node *init, DestructMode dm)
     ve->m_isTemp = true;
 
   if (ve->VarKind() == vk_local) {
-    if (!ve->m_type.IsKnown() && !ve->GetTypeExpr()) {
+    if (!ve->m_type && !ve->GetTypeExpr()) {
       m_initializer->SetAutoType();
       m_autoType = true;
     }

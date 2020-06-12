@@ -252,7 +252,7 @@ void Class::AddUndetermined(Entity *e) {
 
 void Class::PreDestroy() {
   delete[] m_vtable;
-  if (m_type.IsKnown())
+  if (m_type)
     m_type.UpdateClass(nullptr);
 }
 
@@ -1149,7 +1149,7 @@ bool Class::HasOpDeref() {
 }
 
 Type Class::AsType() {
-  if (!m_type.IsKnown())
+  if (!m_type)
     m_type = Type::GetClassType(this);
   return m_type;
 }

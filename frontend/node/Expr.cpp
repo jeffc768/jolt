@@ -61,7 +61,7 @@ Location Expr::GetLocation() {
 }
 
 Type Expr::GetType() {
-  verify(m_expr->m_type.IsKnown());
+  verify(m_expr->m_type);
   return m_expr->m_type;
 }
 

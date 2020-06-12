@@ -94,7 +94,7 @@ void Value::DeflateFields(Deflator &DF) {
       DF << AsType();
       return;
     case tk_array:
-      verify(m_type.IndexType().IsKnown());
+      verify(m_type.IndexType());
       verify(m_type.ElementType() == tk_char); // FIXME
       break;
     case tk_pseudo:
@@ -282,7 +282,7 @@ bool Value::IsSubtypeOf(Type t) {
     if (t != tk_array || t.ElementType() != tk_char)
       return false;
     intptr_t card = t.IndexType().Cardinality();
-    if (t.IndexType().IsKnown() && card == -1)
+    if (t.IndexType() && card == -1)
       return false;
     String *s = safe_cast<String *>(As<Object*>());
     if (card >= 0 && size_t(card) != s->Length())
@@ -301,7 +301,7 @@ Value *Value::Lower(Type t) {
 
   // FIXME: ought to have real compilation errors here, especiall for in-
   // appropriate enum literals being lowered to integer/float/pointer.
-  verify(!t.IsKnown() || IsSubtypeOf(t));
+  verify(!t || IsSubtypeOf(t));
   if (m_type == Type::PseudoInteger()) {
     // FIXME: handle bigger numbers.
     Integer *value = safe_cast<Integer *>(As<Object *>());
@@ -311,11 +311,11 @@ Value *Value::Lower(Type t) {
       return Value::NewFloat(t, double(num));
     if (t == Type::PseudoFloat())
       return Value::NewPseudo(t, new Float(num));
-    if (!t.IsKnown())
+    if (!t)
       t = value->GetSizeInBits() < 32 ? Type::Int() : Type::Long();
     return Value::NewInt(t, num);
   } else if (m_type == Type::PseudoFloat()) {
-    if (!t.IsKnown())
+    if (!t)
       t = Type::Double();
     return Value::NewFloat(t, AsDouble());
   } else if (m_type == Type::PseudoEnum()) {
@@ -324,7 +324,7 @@ Value *Value::Lower(Type t) {
       return Value::NewInt(t, t.OrdinalOf(ident));
     if (t == tk_pointer) {
       if (Type u = t.BaseType(); u == tk_array)
-        if (!u.IndexType().IsKnown())
+        if (!u.IndexType())
           t = Type::PointerTo(u.SetIndexType(0));
       return Value::New(t);  // assume .null
     }

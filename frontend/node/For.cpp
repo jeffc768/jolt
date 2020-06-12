@@ -151,7 +151,7 @@ Node *For::HandleArrays(Context &ctx) {
 
   // Generate loop termination test.
   auto getsize = [&]() -> Node * {
-    if (Type t = aggtype.IndexType(); t.IsKnown())
+    if (Type t = aggtype.IndexType(); t)
       return new Literal(m_location, Value::NewInt(indtype, t.Cardinality()));
     else
       return new ExtractDescriptor((aggve->AsValue(m_location))->AddrOf(false));

@@ -79,7 +79,7 @@ void Initializer::DeflateFields(Deflator &DF) {
   DF << m_autoType;
   DF << m_blockReplacement;
   DF << m_dontLower;
-  verify(!m_deducedType.IsKnown());
+  verify(!m_deducedType);
   verify(!m_replacement);
   verify(!m_rvalueTemp);
 }
@@ -110,7 +110,7 @@ Node *Initializer::ResolveType_(Context &ctx) {
     m_name = new Ident(m_location, wks_op_apply);
 
   // Resolve type, if one was supplied.
-  if (m_type.IsKnown()) {
+  if (m_type) {
     return this;
   } else if (m_autoType) {
     return this;
@@ -153,7 +153,7 @@ static Type DeduceTupleType(List *ln) {
 
 Node *Initializer::ResolveFully_(Context &ctx) {
   // Note: the type may be set after ResolveType but before here.
-  verify(m_autoType || m_type.IsKnown());
+  verify(m_autoType || m_type);
 
   Context::PushVoid pv(ctx, false);
 
@@ -184,8 +184,7 @@ Node *Initializer::ResolveFully_(Context &ctx) {
 
   // FIXME: convert conformant array to fixed array when number of elements
   // is known.
-  if (m_type == tk_array && !m_type.IndexType().IsKnown() &&
-      m_type == rt_rvalue) {
+  if (m_type == tk_array && !m_type.IndexType() && m_type == rt_rvalue) {
     Integer *zero = Integer::Get(wki_zero);
     Integer *high = Integer::Get((long)m_values.size() - 1);
     m_type = m_type.SetIndexType(Type::IntegerSubrange(zero, high));
@@ -314,7 +313,7 @@ bool Initializer::Dump(BufferWriter &bw, int level, int maxlevel,
   if (DumpCommon(bw, level, "Initializer", desc, descwidth))
     return true;
 
-  if (m_deducedType.IsKnown()) {
+  if (m_deducedType) {
     if (bw.Append(" dt:", 4))
       return true;
     if (m_deducedType.Dump(bw))

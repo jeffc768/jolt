@@ -222,11 +222,11 @@ Value *Node::Evaluate(Type t) {
       }
     }
 
-    if (!t.IsKnown())
+    if (!t)
       t = m_type;
   }
 
-  if (!t.IsKnown())
+  if (!t)
     t = m_type.RValue();
 
   // If the expression is simply a literal, short-circuit the evaluation.
@@ -413,7 +413,7 @@ namespace {
             // Handle string literal being lowered to a char const*.  It is
             // assumed a zero byte terminator is present.
             Type t = m_type;
-            if (m_extern_C && !t.IsKnown())
+            if (m_extern_C && !t)
               t = Type::PointerTo(Type::Char8().Const());
             ln->m_value = ln->m_value->Lower(t);
             ln->m_type = ln->m_value->ObjectType();
@@ -789,7 +789,7 @@ namespace {
     void Merge(Type t) {
       // Ignore paths that never complete.
       if (t != Type::Transfers()) {
-        if (m_type.IsKnown()) {
+        if (m_type) {
           // If this path has a different l-value type, then all paths will
           // need to be converted to r-values.
           if (m_type != rt_rvalue) {
@@ -811,7 +811,7 @@ namespace {
     bool MakeRValue() { return m_makeRValue; }
 
     void Complete(Type &t) {
-      if (!m_type.IsKnown())
+      if (!m_type)
         m_type = Type::Transfers();
       if (m_makeRValue)
         m_type = m_type.RValue();
@@ -878,8 +878,8 @@ Type Node::DetermineStatementType(Type t, const vector<Node **> parts,
       verify(false);
     } else if (t == tk_enum) {
       verify(false);
-    } else if (t == tk_array && !t.IndexType().IsKnown()) {
-      if (e->m_type.IndexType().IsKnown()) {
+    } else if (t == tk_array && !t.IndexType()) {
+      if (e->m_type.IndexType()) {
         auto *dn = safe_cast<::Deref *>(e);
         Value *sz = Value::NewInt(Type::IntPtrT(),
                                   e->m_type.IndexType().Cardinality());

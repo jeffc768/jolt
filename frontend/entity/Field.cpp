@@ -89,7 +89,7 @@ void Field::DeflateFields(Deflator &DF) {
     DF << m_typeExpr;
 
     verify(m_state == st_initial);
-    verify(!m_type.IsKnown());
+    verify(!m_type);
     verify(!m_offset);
     verify(!m_runTarget);
     verify(!m_compileTarget);

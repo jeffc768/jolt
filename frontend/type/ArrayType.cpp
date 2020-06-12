@@ -58,7 +58,7 @@
 #include "util/Value.h"
 
 static Node *GetArraySize(Location sl, Type t, Node *ary) {
-  if (t.IndexType().IsKnown())
+  if (t.IndexType())
     return new Literal(sl, Value::NewInt(Type::SizeT(),
                                          t.IndexType().Cardinality()));
   else if (ary)
@@ -191,7 +191,7 @@ namespace {
 
       Node *size = nullptr;
       bool isDynamic = an->m_type == tk_array &&
-                      !an->m_type.IndexType().IsKnown();
+                      !an->m_type.IndexType();
       if (isDynamic) {
         size = new ExtractDescriptor(sl, Type::SizeT());
       } else {
@@ -208,8 +208,8 @@ namespace {
             // Do copy construction.
             // FIXME: handle dynamic array.
             sl = arg->m_location;
-            verify(t.IndexType().IsKnown());  // FIXME: handle conformant source
-            verify(u.IndexType().IsKnown());  // FIXME: handle conformant source
+            verify(t.IndexType());  // FIXME: handle conformant source
+            verify(u.IndexType());  // FIXME: handle conformant source
 
             // Generate a loop.
             Node *iv = nullptr;
@@ -286,7 +286,7 @@ namespace {
       if (an->m_formalTypes.size() == 1) {
         Type u = an->m_arguments[0]->m_type;
         if (u == tk_array && u.ElementType().IsSubtypeOf(et) != NO) {
-          if (u.IndexType().IsKnown()) {
+          if (u.IndexType()) {
             if (t.Cardinality() != u.Cardinality())
               return Type::Suppress();
           }

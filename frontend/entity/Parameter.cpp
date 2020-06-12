@@ -62,7 +62,7 @@ void Parameter::DeflateFields(Deflator &DF) {
   DF << m_value;
   DF << m_valueExpr;
 
-  verify(!m_typeExpr || !m_type.IsKnown());
+  verify(!m_typeExpr || !m_type);
   verify(!m_literalValue);
 }
 

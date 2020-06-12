@@ -471,8 +471,8 @@ void ModuleDeflator::AppendOneType(Type t) {
 
       case tk_codefragment: {
         Type u = t.BaseType();
-        AppendToTypeBlob(u.IsKnown());
-        if (u.IsKnown())
+        AppendToTypeBlob(u);
+        if (u)
           AppendToTypeBlob(u.BaseType());
         break;
       }
@@ -769,7 +769,7 @@ Type ModuleInflator::InflateType_() {
 
   verify(ord < m_types.size());
   Type t = m_types[ord];
-  if (t.IsKnown())
+  if (t)
     return t;
 
   // Type unknown is used to mark an uninflated type, but we know that this

@@ -60,7 +60,7 @@ public:
 
   // Ask whether the initializer came with an explicit type, and the ability
   // to set it if it did not.
-  bool NeedsType() { return !m_typeExpr && !m_type.IsKnown() && !m_autoType; }
+  bool NeedsType() { return !m_typeExpr && !m_type && !m_autoType; }
 
   // If no type is set at construction, one of these must be called prior to
   // ResolveFully().

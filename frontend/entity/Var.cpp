@@ -84,7 +84,7 @@ void Var::ResolveFully() {
   if (AttributeList *al = Attributes())
     al->ResolveFully();
 
-  if (!m_type.IsKnown()) {
+  if (!m_type) {
     // The type must come from the initializer, which is owned by VarDecl.
     if (!m_typeExpr) {
       m_state = st_resolved;

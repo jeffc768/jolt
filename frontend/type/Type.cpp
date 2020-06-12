@@ -849,7 +849,7 @@ Type Type::PointerTo(Type base) {
   if (base == tk_class) {
     return ThinPointerTo(base);
   } else if (base == tk_array) {
-    if (base.IndexType().IsKnown()) {
+    if (base.IndexType()) {
       return ThinPointerTo(base);
     } else {
       base = base.RValue();
@@ -866,7 +866,7 @@ static HashTable<ThinPointerInfo> g_thinPointerMap;
 Type Type::ThinPointerTo(Type base) {
   if (base == tk_valueless)
     return Type::Suppress();
-  verify(base != tk_pseudo && base.IsKnown());
+  verify(base != tk_pseudo && base);
   base = base.RValue();
   Offset rv = g_thinPointerMap.FindOrAdd(base);
   return Type(tk_pointer, rv);
@@ -1098,7 +1098,7 @@ size_t Type::StorageSize() const {
 
     case tk_array: {
       auto ai = FromHeapOffset<ArrayInfo>(m_offset);
-      verify(ai->m_index.IsKnown());
+      verify(ai->m_index);
       return ai->m_element.StorageSize() * ai->m_index.Cardinality();
     }
 
@@ -1295,7 +1295,7 @@ bool Type::IsThin() const {
   else if (m_kind == tk_fatpointer)
     return false;
   else if (m_kind == tk_array)
-    return IndexType().IsKnown();
+    return IndexType();
   verify(m_kind == tk_valueless && m_offset == t_Suppress);
   return false;
 }
@@ -2205,7 +2205,7 @@ void Type::AppendToHash(SHA512 &hash) const {
     case tk_array:
       ElementType().AppendToHash(hash);
       hash.Append('[');
-      if (Type t = IndexType(); t.IsKnown())
+      if (Type t = IndexType(); t)
         t.AppendToHash(hash);
       hash.Append(']');
       break;
@@ -2219,7 +2219,7 @@ void Type::AppendToHash(SHA512 &hash) const {
 
     case tk_codefragment:
       hash.Append('{');
-      if (Type t = BaseType(); t.IsKnown())
+      if (Type t = BaseType(); t)
         t.AppendToHash(hash);
       hash.Append('}');
       break;
@@ -2512,7 +2512,7 @@ bool Type::Dump(BufferWriter &bw) const {
       ai->m_element.Dump(bw);
       if (bw.Append('['))
         return true;
-      if (ai->m_index.IsKnown())
+      if (ai->m_index)
         ai->m_index.Dump(bw);
       if (bw.Append(']'))
         return true;
@@ -2537,8 +2537,7 @@ bool Type::Dump(BufferWriter &bw) const {
         break;
       if (bw.Append("codefragment_t<", 15))
         return true;
-      if (Type t = FromHeapOffset<CodeFragmentInfo>(m_offset)->m_base;
-          t.IsKnown()) {
+      if (Type t = FromHeapOffset<CodeFragmentInfo>(m_offset)->m_base; t) {
         if (t.Dump(bw))
           return true;
       }

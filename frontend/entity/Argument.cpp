@@ -93,12 +93,12 @@ void Argument::SetType(Type t) {
   // When no type expression has been provided, we must wait either for
   // Method to plug in the class type (for "this"), or for MethodBody to do
   // so (for deduced return type).
-  verify(!m_typeExpr && !m_type.IsKnown());
+  verify(!m_typeExpr && !m_type);
   m_type = t;
 }
 
 bool Argument::HasType() {
-  return m_type.IsKnown() || m_typeExpr;
+  return m_type || m_typeExpr;
 }
 
 void Argument::ResolveFully() {
@@ -109,8 +109,8 @@ void Argument::ResolveFully() {
   if (auto *al = Attributes())
     al->ResolveFully();
 
-  verify(m_type.IsKnown() || m_typeExpr);
-  if (!m_type.IsKnown()) {
+  verify(m_type || m_typeExpr);
+  if (!m_type) {
     if (Value *v = m_typeExpr->Evaluate(Type::JType()))
       m_type = v->AsType();
     else

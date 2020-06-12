@@ -366,7 +366,7 @@ public:
            *reinterpret_cast<unsigned *>(&t);
   }
 
-  bool IsKnown() const { return m_kind != tk_unknown; }
+  operator bool() const { return m_kind != tk_unknown; }
 
   // Return cardinality of type, e.g. the number of possible discrete values a
   // variable of this type can have.  Types for which cardinality is undefined

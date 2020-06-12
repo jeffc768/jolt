@@ -50,7 +50,7 @@ CallBuiltin::CallBuiltin(Inflator &IF)
 CallBuiltin::CallBuiltin(Location sl, Type t, BC::NativeFunction *nf)
     : Node(sl, t),
       m_function(nf) {
-  verify(t.IsKnown());
+  verify(t);
   m_state = st_fully_resolved;
 }
 

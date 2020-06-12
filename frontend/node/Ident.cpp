@@ -208,7 +208,7 @@ resolveEntity:
     // type).
     e = m_entity->AsValue(m_location);
 #if 0
-      if (!m_type.IsKnown()) {
+      if (!m_type) {
         if (m_entity->Kind() == ek_Class) {
           auto ce = safe_cast<Class *>(m_entity);
           m_type = ce->Metaclass()->AsType().LValueRef();

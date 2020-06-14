@@ -83,7 +83,7 @@ namespace {
         return new Literal(an->m_location, rv);
       }
 
-      return new Binary(an->m_location, Type::Bool(), m_relop, le, re);
+      return new Binary(an->m_location, m_relop, le, re);
     }
 
     virtual Type ResolveTypes(Apply *an, Context &ctx) {

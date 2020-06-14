@@ -70,8 +70,7 @@ namespace {
           return new Literal(an->m_location, rv);
         }
 
-        lt = Type::Join(lt, lt);
-        return new Unary(an->m_location, lt, m_unop, an->m_receiver);
+        return new Unary(an->m_location, m_unop, an->m_receiver);
       }
 
       Node *re = an->m_arguments[0];
@@ -118,8 +117,7 @@ namespace {
         return new Literal(an->m_location, rv);
       }
 
-      Type t = m_binop >= Binary::op_seteq ? Type::Bool() : lt;
-      return new Binary(an->m_location, t, m_binop, le, re);
+      return new Binary(an->m_location, m_binop, le, re);
     }
 
     virtual Type ResolveTypes(Apply *an, Context &ctx) {
@@ -166,7 +164,7 @@ namespace {
         return Type::Suppress();
       }
 
-      an->m_receiverType = rt;
+      an->m_receiverType = Type::Join(rt, rt);
       if (immediate) {
         return Type();
       } else if (m_binop >= Binary::op_seteq) {

@@ -183,7 +183,7 @@ Node *Node::ResolveFully(Context &ctx) {
   if (m_state != st_fully_resolved) {
     Node *e = ResolveType(ctx);
     if (e->m_state != st_fully_resolved) {
-      m_state = st_fully_resolved;
+      e->m_state = st_fully_resolved;
       e = e->ResolveFully_(ctx);
     }
     return e;
@@ -191,6 +191,16 @@ Node *Node::ResolveFully(Context &ctx) {
 
   return this;
 }
+
+Node *Node::ResolveTo(Context &ctx, Node *to) {
+  if (to->m_state == st_type_resolved)
+    return ResolveType(ctx);
+  else if (to->m_state == st_fully_resolved)
+    return ResolveFully(ctx);
+  else
+    return this;
+}
+
 
 Value *Node::Evaluate(Type t) {
   verify(IsFullyResolved());

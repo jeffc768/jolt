@@ -177,8 +177,7 @@ namespace {
     Type t = an->m_formalTypes[0];
 
     if (t == tk_generic)
-      return new Binary(an->m_location, Type::Bool(), op,
-                        an->m_receiver, an->m_arguments[0]);
+      return new Binary(an->m_location, op, an->m_receiver, an->m_arguments[0]);
 
     // We must cast the receiver to a type and retry the comparison.
     WellKnownString wks = op == Binary::op_seteq ? wks_op_eq : wks_op_ne;

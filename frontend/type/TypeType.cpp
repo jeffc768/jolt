@@ -416,8 +416,8 @@ namespace {
     TypeEq() : NativeOperator("TypeEq") { }
 
     virtual Node *Run(Apply *an, Context &ctx) {
-      return new Binary(an->m_location, Type::Bool(), Binary::op_seteq,
-                        an->m_receiver, an->m_arguments[0]);
+      return new Binary(an->m_location, Binary::op_seteq, an->m_receiver,
+                        an->m_arguments[0]);
     }
 
     virtual Type ResolveTypes(Apply *an, Context &ctx) {
@@ -438,8 +438,8 @@ namespace {
     TypeNe() : NativeOperator("TypeNe") { }
 
     virtual Node *Run(Apply *an, Context &ctx) {
-      return new Binary(an->m_location, Type::Bool(), Binary::op_setne,
-                        an->m_receiver, an->m_arguments[0]);
+      return new Binary(an->m_location, Binary::op_setne, an->m_receiver,
+                        an->m_arguments[0]);
     }
 
     virtual Type ResolveTypes(Apply *an, Context &ctx) {

@@ -52,7 +52,7 @@ public:
     op_illegal
   };
 
-  Unary(Location sl, Type t, Opcode op, Node *e);
+  Unary(Location sl, Opcode op, Node *e);
 
   virtual void VisitChildren(Visitor *v);
 

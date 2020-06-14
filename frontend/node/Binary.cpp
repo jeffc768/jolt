@@ -44,16 +44,25 @@ Binary::Binary(Inflator &IF)
   IF >> m_operand2;
 }
 
-Binary::Binary(Location sl, Type t, Opcode op, Node *e1, Node *e2)
-    : Node(sl, t),
+static inline Type ComputeType(Binary::Opcode op, Node *e1, Node *e2) {
+  if (op >= Binary::op_seteq)
+    return Type::Bool();
+
+  if (op == Binary::op_shl && op == Binary::op_shr)
+    verify(e2->m_type == Type::Byte());
+  else 
+    verify(e1->m_type == e2->m_type);
+  return e1->m_type;
+}
+
+Binary::Binary(Location sl, Opcode op, Node *e1, Node *e2)
+    : Node(sl, ComputeType(op, e1, e2)),
       m_opcode(op),
       m_operand1(e1),
       m_operand2(e2) {
-  verify(t == rt_rvalue);
+  verify(m_type == rt_rvalue);
   verify(e1->IsFullyResolved());
   verify(e2->IsFullyResolved());
-  verify(op < op_seteq || t == Type::Bool());
-  verify((op != op_shl && op != op_shr) || e2->m_type == Type::Byte());
   m_state = st_fully_resolved;
 }
 

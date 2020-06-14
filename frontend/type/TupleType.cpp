@@ -75,8 +75,8 @@ namespace {
           m_binop(b) { }
 
     virtual Node *Run(Apply *an, Context &ctx) {
-      return new Binary(an->m_location, Type::Bool(), m_binop,
-                        an->m_receiver, an->m_arguments[0]);
+      return new Binary(an->m_location, m_binop, an->m_receiver,
+                        an->m_arguments[0]);
     }
 
     virtual Type ResolveTypes(Apply *an, Context &ctx) {

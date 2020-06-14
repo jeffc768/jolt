@@ -119,7 +119,7 @@ namespace {
       Location sl = an->m_location;
 
       if (lt.StorageSize() == sizeof(void *))
-        return new Binary(sl, Type::Bool(), m_binop, le, re);
+        return new Binary(sl, m_binop, le, re);
 
       // Comparing fat pointers.  First separate the pointer and descriptor.
       TempScope ts;
@@ -128,12 +128,12 @@ namespace {
 
       // Start by comparing the descriptors.  The result won't be used unless
       // the pointers are equal.
-      Node *c2 = new Binary(sl, Type::Bool(), m_binop, d1, d2);
+      Node *c2 = new Binary(sl, m_binop, d1, d2);
 
       // Equality/inequality is simpler than other comparisons.
       if (m_binop == Binary::op_seteq || m_binop == Binary::op_setne) {
-        Node *c1 = new Binary(sl, Type::Bool(), m_binop, p1, p2);
-        Node *e = new Binary(sl, Type::Bool(), Binary::op_and, c1, c2);
+        Node *c1 = new Binary(sl, m_binop, p1, p2);
+        Node *e = new Binary(sl, Binary::op_and, c1, c2);
         return ts.Get(e);
       } else {
         Var *ve1 = new Var(sl, p1->m_type);
@@ -156,16 +156,16 @@ namespace {
         e1 = new Load(sl, e1->Deref());
         Node *e2 = new VarAddr(sl, ve2);
         e2 = new Load(sl, e2->Deref());
-        Node *c1a = new Binary(sl, Type::Bool(), op, e1, e2);
+        Node *c1a = new Binary(sl, op, e1, e2);
 
         e1 = new VarAddr(sl, ve1);
         e1 = new Load(sl, e1->Deref());
         e2 = new VarAddr(sl, ve2);
         e2 = new Load(sl, e2->Deref());
-        Node *c1b = new Binary(sl, Type::Bool(), Binary::op_seteq, e1, e2);
+        Node *c1b = new Binary(sl, Binary::op_seteq, e1, e2);
 
-        c1b = new Binary(sl, Type::Bool(), Binary::op_and, c2, c1b);
-        c1a = new Binary(sl, Type::Bool(), Binary::op_or, c1a, c1b);
+        c1b = new Binary(sl, Binary::op_and, c2, c1b);
+        c1a = new Binary(sl, Binary::op_or, c1a, c1b);
         return ts.Get(c1a);
       }
     }

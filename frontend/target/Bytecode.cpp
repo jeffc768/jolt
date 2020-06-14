@@ -59,10 +59,10 @@ enum OpcodeType {
 };
 
 static const OpcodeInfo g_opcodes[] = {
-  /* op_addf32       */ { 1,  -1,  false,  ot_none,         "addf32"          },
-  /* op_addf64       */ { 1,  -1,  false,  ot_none,         "addf64"          },
   /* op_add32        */ { 1,  -1,  false,  ot_none,         "add32"           },
   /* op_add64        */ { 1,  -1,  false,  ot_none,         "add64"           },
+  /* op_addf32       */ { 1,  -1,  false,  ot_none,         "addf32"          },
+  /* op_addf64       */ { 1,  -1,  false,  ot_none,         "addf64"          },
   /* op_and32        */ { 1,  -1,  false,  ot_none,         "and32"           },
   /* op_and64        */ { 1,  -1,  false,  ot_none,         "and64"           },
   /* op_call         */ { 2,  -1,  false,  ot_delta,        "call"            },

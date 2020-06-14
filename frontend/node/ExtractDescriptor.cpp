@@ -75,7 +75,7 @@ bool ExtractDescriptor::Dump(BufferWriter &bw, int level, int maxlevel,
   if (bw.Append('\n'))
     return true;
 
-  if (++level < maxlevel)
+  if (++level < maxlevel && m_pointer)
     return m_pointer->Dump(bw, level, maxlevel, nullptr, 0);
 
   return false;

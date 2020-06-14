@@ -46,8 +46,7 @@ namespace {
 
     virtual Node *Run(Apply *an, Context &ctx) {
       Literal *ln = new Literal(an->m_location, Value::NewBool(true));
-      return new Binary(an->m_location, Type::Bool(), Binary::op_xor,
-                        an->m_receiver, ln);
+      return new Binary(an->m_location, Binary::op_xor, an->m_receiver, ln);
     }
 
     virtual Type ResolveTypes(Apply *an, Context &ctx) {
@@ -69,8 +68,8 @@ namespace {
           m_binop(b) { }
 
     virtual Node *Run(Apply *an, Context &ctx) {
-      return new Binary(an->m_location, Type::Bool(), m_binop,
-                        an->m_receiver, an->m_arguments[0]);
+      return new Binary(an->m_location, m_binop, an->m_receiver,
+                        an->m_arguments[0]);
     }
 
     virtual Type ResolveTypes(Apply *an, Context &ctx) {

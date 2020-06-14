@@ -212,7 +212,7 @@ Node *New::ResolveFully_(Context &ctx) {
     // As what is being new'ed has a statically known size, simply use the
     // storage size of the type (works for arrays also).
     m_size = new Literal(m_location, Value::NewInt(Type::SizeT(),
-                                                 t.StorageSize()));
+                                                   t.StorageSize()));
   } else {
     // Multiply the element size with the number of elements.
     size_t amt = t.ElementType().StorageSize();

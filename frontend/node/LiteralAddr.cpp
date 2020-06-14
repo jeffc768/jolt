@@ -41,11 +41,13 @@ LiteralAddr::LiteralAddr(Location sl, Type t, Value *data, Const *ce)
 void LiteralAddr::DeflateFields(Deflator &DF) {
   Node::DeflateFields(DF);
   DF << m_data;
+  DF << m_const;
 }
 
 LiteralAddr::LiteralAddr(Inflator &IF)
       : Node(IF) {
   IF >> m_data;
+  IF >> m_const;
 }
 
 Node *LiteralAddr::ResolveType_(Context &ctx) {

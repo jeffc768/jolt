@@ -42,12 +42,12 @@ Unary::Unary(Inflator &IF)
   IF >> m_operand;
 }
 
-Unary::Unary(Location sl, Type t, Opcode op, Node *e)
-    : Node(sl, t),
+Unary::Unary(Location sl, Opcode op, Node *e)
+    : Node(sl, e->m_type),
       m_opcode(op),
       m_operand(e) {
-  verify(t == rt_rvalue);
   verify(e->IsFullyResolved());
+  verify(m_type == rt_rvalue);
   m_state = st_fully_resolved;
 }
 

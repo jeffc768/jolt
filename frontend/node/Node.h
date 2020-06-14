@@ -85,6 +85,8 @@ enum NodeKind {
   nk_Shared,
   nk_Store,
   nk_Switch,
+  nk_TempDef,
+  nk_TempUse,
   nk_Transfer,
   nk_TypeHolder,
   nk_TypeOf,
@@ -191,6 +193,9 @@ public:
   // Fully resolve the expression rooted at this node.  Normally, it returns
   // itself, but a node has the option of replacing itself with something else.
   Node *ResolveFully(Context &ctx);
+
+  // Resolve expression rooted at this node to the same extent as node "to".
+  Node *ResolveTo(Context &ctx, Node *to);
 
   bool IsTypeResolved() { return m_state != st_initial; }
   bool IsFullyResolved() { return m_state == st_fully_resolved; }

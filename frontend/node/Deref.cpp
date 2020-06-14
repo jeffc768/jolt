@@ -85,7 +85,6 @@ Node *Deref::ResolveType_(Context &ctx) {
 }
 
 Node *Deref::ResolveFully_(Context &ctx) {
-  Context::PushVoid(ctx, false);
   m_expr = m_expr->ResolveFully(ctx);
   return this;
 }

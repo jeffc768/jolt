@@ -79,7 +79,7 @@ static Node *GenerateLoopOverElements(Location sl, Type t, Node *sizeExpr,
   // Loop body wrapper.  Return pointer to first node of the sequence node for
   // our caller to insert the loop body.
   Node *e2 = new Store(sl, iv,
-                       new Binary(sl, Type::SizeT(), Binary::op_add,
+                       new Binary(sl, Binary::op_add,
                                   new Load(sl, iv),
                                   new Literal(sl, Value::NewInt(Type::SizeT(),
                                                                 1))));
@@ -88,8 +88,7 @@ static Node *GenerateLoopOverElements(Location sl, Type t, Node *sizeExpr,
 
   // Finally, the loop itself.
   e = new While(sl,
-                new Binary(sl, Type::Bool(), Binary::op_setlt,
-                           new Load(sl, iv), sizeExpr),
+                new Binary(sl, Binary::op_setlt, new Load(sl, iv), sizeExpr),
                 sn);
 
   vd->m_expr = e;

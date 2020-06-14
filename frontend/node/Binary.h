@@ -66,7 +66,7 @@ public:
     op_illegal
   };
 
-  Binary(Location sl, Type t, Opcode op, Node *e1, Node *e2);
+  Binary(Location sl, Opcode op, Node *e1, Node *e2);
 
   virtual void VisitChildren(Visitor *v);
 

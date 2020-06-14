@@ -158,12 +158,12 @@ Node *For::HandleArrays(Context &ctx) {
   };
   Node *ln1 = new Load(m_location, indve->AsValue(m_location));
   Node *sz = getsize();
-  Node *cond = new Binary(m_location, Type::Bool(), Binary::op_setlt, ln1, sz);
+  Node *cond = new Binary(m_location, Binary::op_setlt, ln1, sz);
 
   // Generate induction increment.
   Node *ln2 = new Load(m_location, indve->AsValue(m_location));
   Node *one = new Literal(m_location, Value::NewInt(indtype, 1));
-  Node *add = new Binary(m_location, indtype, Binary::op_add, ln2, one);
+  Node *add = new Binary(m_location, Binary::op_add, ln2, one);
   Node *next = new Store(m_location, indve->AsValue(m_location), add);
 
   // Provide access to current array element.

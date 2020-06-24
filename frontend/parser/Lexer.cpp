@@ -213,16 +213,6 @@ static TokenTraits s_traits;
 
 /******************************************************************************/
 
-// A note on managed memory.
-//
-// Tokens are kept in managed memory, yet we have static data structures
-// pointing at these tokens (and other managed objects) that we have not
-// declared as roots to the memory manager.  This is because the first
-// garbage collection will not happen until after yacc finishes building
-// a parse tree.  By then, these data structures will be history and any
-// tokens surviving the first GC will do so because they're part of the
-// parse tree--and the root of that tree will be known to the memory manager.
-
 static Token *s_tokens = nullptr;
 
 // Called from bison-generated parser.

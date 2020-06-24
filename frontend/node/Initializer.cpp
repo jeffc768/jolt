@@ -182,8 +182,7 @@ Node *Initializer::ResolveFully_(Context &ctx) {
       m_type = Type::Join(m_type, e->m_type);
   }
 
-  // FIXME: convert conformant array to fixed array when number of elements
-  // is known.
+  // Convert conformant array to fixed array when number of elements is known.
   if (m_type == tk_array && !m_type.IndexType() && m_type == rt_rvalue) {
     Integer *zero = Integer::Get(wki_zero);
     Integer *high = Integer::Get((long)m_values.size() - 1);

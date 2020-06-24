@@ -28,9 +28,6 @@
 
 // Member node states related to members on array values.
 
-// FIXME: need to support pseudolist, and in general follow what TupleType
-// does.
-
 #include "entity/Const.h"
 #include "entity/Method.h"
 #include "entity/Namespace.h"
@@ -42,6 +39,7 @@
 #include "node/Ident.h"
 #include "node/Index.h"
 #include "node/Initializer.h"
+#include "node/List.h"
 #include "node/Literal.h"
 #include "node/Load.h"
 #include "node/Member.h"
@@ -177,11 +175,9 @@ namespace {
 
   ArrayDestruct ArrayDestruct::s_macro;
 
-  class ArrayConstruct: public NativeOperator {
+  class ArrayConstructList: public NativeOperator {
   public:
-    ArrayConstruct() : NativeOperator("ArrayConstruct") { }
-
-    virtual ::MethodKind MethodKind() { return mk_construct; }
+    ArrayConstructList() : NativeOperator("ArrayConstructList") { }
 
     virtual Node *Run(Apply *an, Context &ctx) {
       Type t = an->m_type;
@@ -196,34 +192,6 @@ namespace {
       } else {
         size_t sz = static_cast<size_t>(t.IndexType().Cardinality());
         size = new Literal(an->m_location, Value::NewInt(Type::SizeT(), sz));
-      }
-
-      if (an->m_formalTypes.size() == 1) {
-        Node *arg = an->m_arguments[0];
-        if (arg->m_type == tk_pointer) {
-          Type u = arg->m_type.BaseType();
-
-          if (u == tk_array && u.ElementType().IsSubtypeOf(et) != NO) {
-            // Do copy construction.
-            // FIXME: handle dynamic array.
-            sl = arg->m_location;
-            verify(t.IndexType());  // FIXME: handle conformant source
-            verify(u.IndexType());  // FIXME: handle conformant source
-
-            // Generate a loop.
-            Node *iv = nullptr;
-            Node **body = nullptr;
-            Node *loop = GenerateLoopOverElements(sl, t, size, 0, iv, body);
-
-            // Loop body.
-            Node *addr = new Index(sl, arg->Deref(), new Load(sl, iv));
-            Initializer *in = new Initializer(sl, et, addr->Deref(), false);
-            addr = new Index(in->m_location, t, new Load(sl, iv));
-            *body = new Construct(addr, in);
-
-            return loop;
-          }
-        }
       }
 
       vector<Node *> list;
@@ -272,46 +240,136 @@ namespace {
     }
 
     virtual Type ResolveTypes(Apply *an, Context &ctx) {
+      // Should never get here, because Apply learns of us only after
+      // ResolveTypes is called on ArrayConstruct.
+      verify(false);
+      return Type::Suppress();
+    }
+
+    static ArrayConstructList s_macro;
+  };
+
+  ArrayConstructList ArrayConstructList::s_macro;
+
+
+  class ArrayConstruct: public NativeOperator {
+  public:
+    ArrayConstruct() : NativeOperator("ArrayConstruct") { }
+
+    virtual ::MethodKind MethodKind() { return mk_construct; }
+
+    virtual Node *Run(Apply *an, Context &ctx) {
+      Type t = an->m_type;
+      Type et = t.ElementType();
+      Location sl = an->m_location;
+
+      Node *size = nullptr;
+      bool isDynamic = an->m_type == tk_array && !an->m_type.IndexType();
+      if (isDynamic) {
+        size = new ExtractDescriptor(sl, Type::SizeT());
+      } else {
+        size_t sz = static_cast<size_t>(t.IndexType().Cardinality());
+        size = new Literal(an->m_location, Value::NewInt(Type::SizeT(), sz));
+      }
+
+      Node *arg = an->m_arguments[0];
+      Type u = arg->m_type.BaseType();
+
+      sl = arg->m_location;
+      verify(t.IndexType());  // FIXME: handle conformant source
+      verify(u.IndexType());  // FIXME: handle conformant source
+
+      // Generate a loop.
+      Node *iv = nullptr;
+      Node **body = nullptr;
+      Node *loop = GenerateLoopOverElements(sl, t, size, 0, iv, body);
+
+      // Loop body.
+      Node *addr = new Index(sl, arg->Deref(), new Load(sl, iv));
+      Initializer *in = new Initializer(sl, et, addr->Deref(), false);
+      addr = new Index(in->m_location, t, new Load(sl, iv));
+      *body = new Construct(addr, in);
+
+      return loop;
+    }
+
+    virtual Type ResolveTypes(Apply *an, Context &ctx) {
       an->m_receiverType = an->m_receiverType.RValue();
 
       Context::PushVoid pv(ctx, false);
       an->m_receiver = an->m_receiver->ResolveFully(ctx);
       Type t = an->m_receiver->EvaluateType();
-      if (an->m_formalTypes.size() == 0)
+      if (t == rt_rvalueref)
+        t = t.RValue();
+      if (an->m_formalTypes.size() == 0) {
+        an->ResetNativeOperator(&ArrayConstructList::s_macro, 0);
         return t;
+      }
+
+      // Look for copy construction (or possibly move construction).
+      Type u = an->m_arguments[0]->m_type.DropQualifiers();
+      size_t cnt = an->m_arguments.size();
       Type et = t.ElementType();
 
-      // Look for copy construction.
+      if (u == Type::PseudoList()) {
+        // FIXME: how to handle indirect lists, e.g. cond ? (list1) : (list2)
+        // Probably by casting each one to the target type.
+        verify(an->m_arguments[0]->Kind() == nk_List);
+        auto ln = safe_cast<List *>(an->m_arguments[0]);
+        if (!ln->IsSubtypeOf(t))
+          return Type::Suppress();
+
+        // We have to get rid of the List node now, otherwise Apply will
+        // attempt to create a list-valued temp var (not a good thing).  Turn
+        // its list of values into our arguments, and switch to a new native
+        // operator that knows how to handle that.
+        cnt = ln->m_values.size();
+        an->ResetNativeOperator(&ArrayConstructList::s_macro, cnt);
+        for (size_t i = 0; i < cnt; i++) {
+          Node *e = ln->m_values[i];
+          an->m_arguments[i] = e;
+          an->m_formalTypes[i] = et.PerfectForward(e->m_type);
+        }
+        goto check_cardinality;
+      }
+
+      // Look for copy construction from another suitable array.
       if (an->m_formalTypes.size() == 1) {
-        Type u = an->m_arguments[0]->m_type;
         if (u == tk_array && u.ElementType().IsSubtypeOf(et) != NO) {
-          if (u.IndexType()) {
-            if (t.Cardinality() != u.Cardinality())
-              return Type::Suppress();
+          Type it = u.IndexType();
+          if (it && t.Cardinality() != u.Cardinality())
+            return Type::Suppress();
+          Type v = an->m_arguments[0]->m_type;
+          if (v == rt_lvalueref || v == ct_const) {
+            et = et.Const();
+            an->m_formalTypes[0] = Type::ArrayOf(et, it).Const().LValueRef();
+          } else {
+            an->m_formalTypes[0] = u.RValueRef();
           }
-          an->m_formalTypes[0] = u == rt_lvalueref ? u : u.RValueRef();
           return t;
         }
       }
 
-      // Copy initialization.  Verify argument types.
-      for (size_t i = 0; i < an->m_arguments.size(); i++) {
-        Type u = an->m_arguments[i]->m_type.DropQualifiers();
-        if (u != Type::PseudoInteger() &&
-            u.IsSubtypeOf(et.DropQualifiers()) == NO)
+      // Copy construction from a list of values; effectively a pseudo list.
+      for (size_t i = 0; i < cnt; i++) {
+        Node *e = an->m_arguments[i];
+        if (!List::ValueIsSubtypeOf(e, et))
           return Type::Suppress();
-        an->m_formalTypes[i] = et;
+        an->m_formalTypes[i] = et.PerfectForward(e->m_type);
       }
 
+      an->ResetNativeOperator(&ArrayConstructList::s_macro, cnt);
+
+    check_cardinality:
       // Verify argument count to extent possible.
       auto card = t.IndexType().Cardinality();
-      auto size = an->m_arguments.size();
-      if (card >= 0 && (size_t)card < size) {
-        EmitError(an) << "Number of values (" << size
+ 
+      if (card >= 0 && (size_t)card < cnt) {
+        EmitError(an) << "Number of values (" << cnt
                       << ") exceeds size of array (" << card << ").";
         ctx.m_error = true;
       } else if (card == -1) {
-        t = t.SetIndexType(size);
+        t = t.SetIndexType(cnt);
       }
 
       return t;

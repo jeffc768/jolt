@@ -361,7 +361,6 @@ namespace {
     TupleConstructList() : NativeOperator("TupleConstructList") { }
 
     virtual Node *Run(Apply *an, Context &ctx) {
-      // FIXME: in non-void context, return the lvalue of receiver.
       Type tt = an->m_type;
       Location sl = an->m_location;
       size_t count = tt.FieldCount();
@@ -448,14 +447,14 @@ namespace {
         // FIXME: how to handle indirect lists, e.g. cond ? (list1) : (list2)
         // Probably by casting each one to the target type.
         verify(an->m_arguments[0]->Kind() == nk_List);
-        if (!safe_cast<List *>(an->m_arguments[0])->IsSubtypeOf(t))
+        auto ln = safe_cast<List *>(an->m_arguments[0]);
+        if (!ln->IsSubtypeOf(t))
           return Type::Suppress();
 
         // We have to get rid of the List node now, otherwise Apply will
         // attempt to create a list-valued temp var (not a good thing).  Turn
         // its list of values into our arguments, and switch to a new native
         // operator that knows how to handle that.
-        auto ln = safe_cast<List *>(an->m_arguments[0]);
         size_t cnt = ln->m_values.size();
         an->ResetNativeOperator(&TupleConstructList::s_macro, cnt);
         for (size_t i = 0; i < cnt; i++) {

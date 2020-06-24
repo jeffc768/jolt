@@ -85,19 +85,25 @@ void Var::ResolveFully() {
     al->ResolveFully();
 
   if (!m_type) {
-    // The type must come from the initializer, which is owned by VarDecl.
     if (!m_typeExpr) {
+      // The type must come from the initializer, which is owned by VarDecl.
       m_state = st_resolved;
       return;
     }
 
     Value *v = m_typeExpr->Evaluate(Type::JType());
     m_type = v ? v->AsType() : Type::Suppress();
+
+    // Note that if the type is a conformant array, the VarDecl must still
+    // update it to include the element count from the initializer (or
+    // complain if it can't).  This does not apply to arguments, obviously.
   }
 
   if (m_type == rt_rvalueref)
     m_type = m_type.LValueRef();
 
+  // To repeat, this does *not* mean the type of the variable has been
+  // finalized!
   m_state = st_resolved;
 }
 

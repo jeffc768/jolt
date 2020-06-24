@@ -32,6 +32,7 @@
 #include "FieldAddr.h"
 #include "Ident.h"
 #include "Initializer.h"
+#include "List.h"
 #include "Literal.h"
 #include "Member.h"
 #include "VarAddr.h"
@@ -71,9 +72,9 @@ VarDecl::VarDecl(Node *field, Node *e, Ident *cons,
       m_field(field),
       m_destructMode(dm) {
   Location loc = cons ? cons->m_location : m_location;
-  m_initializer = new Initializer(loc, cons, args);
-  m_initexpr = m_initializer;
-  m_initializer->BlockReplacement();
+  auto in = new Initializer(loc, cons, args);
+  m_initexpr = in;
+  in->BlockReplacement();
 }
 
 VarDecl::VarDecl(Var *ve, Node *e, Node *init, DestructMode dm)
@@ -81,7 +82,7 @@ VarDecl::VarDecl(Var *ve, Node *e, Node *init, DestructMode dm)
       m_expr(e),
       m_entity(ve),
       m_destructMode(dm) {
-  SetInitExpr(init);
+  auto in = SetInitExpr(init);
   ve->m_vardecl = this;
 
   if (dm == dm_leaves_full_expr)
@@ -89,24 +90,24 @@ VarDecl::VarDecl(Var *ve, Node *e, Node *init, DestructMode dm)
 
   if (ve->VarKind() == vk_local) {
     if (!ve->m_type && !ve->GetTypeExpr()) {
-      m_initializer->SetAutoType();
+      in->SetAutoType();
       m_autoType = true;
     }
   }
 }
 
-void VarDecl::SetInitExpr(Node *e) {
+Initializer *VarDecl::SetInitExpr(Node *e) {
   // FIXME: just use void() as init expression.
   if (e == DONT_INIT) {
     m_initexpr = new Literal({ }, Value::New(Type::Void()));
     m_dontInitialize = true;
-    return;
+    return nullptr;
   }
 
-  m_initializer = new Initializer(e ? e->m_location : m_location,
-                                           nullptr, e);
-  m_initexpr = m_initializer;
-  m_initializer->BlockReplacement();
+  auto in = new Initializer(e ? e->m_location : m_location, nullptr, e);
+  m_initexpr = in;
+  in->BlockReplacement();
+  return in;
 }
 
 void VarDecl::DeflateFields(Deflator &DF) {
@@ -119,7 +120,6 @@ void VarDecl::DeflateFields(Deflator &DF) {
   DF << m_destructor;
   DF << m_constructorMode;
   DF << m_generated;
-  DF << m_initializer;
   DF << m_dontInitialize;
   DF << m_autoType;
 
@@ -138,7 +138,6 @@ VarDecl::VarDecl(Inflator &IF)
   IF >> m_destructor;
   IF >> m_constructorMode;
   IF >> m_generated;
-  IF >> m_initializer;
   IF >> m_dontInitialize;
   IF >> m_autoType;
 
@@ -168,18 +167,42 @@ Node *VarDecl::ResolveType_(Context &ctx) {
         return m_expr->ResolveType(ctx);
   }
 
+  auto in = dyn_cast<Initializer *>(m_initexpr);
+
+  if (auto ae = dyn_cast<Argument *>(m_entity)) {
+    if (!ae->m_isDeducedType)
+      ae->ResolveFully();
+  } else {
+    m_entity->ResolveFully();
+    if (auto ve = dyn_cast<Var *>(m_entity)) {
+      Type t = ve->m_type;
+      if (t == tk_array && t == rt_rvalue && !t.IndexType()) {
+        // When declaring a variable to be a conformant array, pick up the
+        // element count from the initializer.
+        ve->m_type = Type::Suppress();
+        if (in) {
+          if (auto ln = dyn_cast<List *>(in->GetValue())) {
+            ve->m_type = t.SetIndexType(ln->m_values.size());
+          }
+        }
+        if (ve->m_type == Type::Suppress()) {
+          EmitError(m_location) << "Cannot declare conformat array if its size "
+                                << "cannot be deduced from an initializer.";
+        }
+      }
+    }
+  }
+
   if (m_initexpr) {
     m_initexpr = m_initexpr->ResolveType(ctx);
     if (m_initexpr->m_type == tk_valueless) {
       m_type = Type::Join(m_type, m_initexpr->m_type);
     } else if (m_autoType) {
       Context::PushVoid pv(ctx, false);
-      m_initexpr = m_initexpr->ResolveFully(ctx);
-      if (m_initexpr->Kind() == nk_Initializer)
-        m_initializer = safe_cast<Initializer *>(m_initexpr);
 
+      m_initexpr = m_initexpr->ResolveFully(ctx);
       if (auto ve = dyn_cast<Var *>(m_entity))
-        ve->m_type = m_initializer->m_deducedType;
+        ve->m_type = safe_cast<Initializer *>(m_initexpr)->m_deducedType;
       else
         verify(false);
 
@@ -205,23 +228,21 @@ Node *VarDecl::ResolveFully_(Context &ctx) {
 
   Context::PushVoid pv(ctx, false);
 
-  // Wait for Var to resolve the type--but not for deduced return types.
   Type vt = Type::Void();
   if (auto ae = dyn_cast<Argument *>(m_entity)) {
-    if (!ae->m_isDeducedType) {
-      ae->ResolveFully();
+    if (!ae->m_isDeducedType)
       vt = VariableType();
-    }
   } else {
-    m_entity->ResolveFully();
     vt = VariableType();
   }
 
   if (vt == Type::Suppress())
     ctx.m_error = true;
 
-  if (m_initializer && m_initializer->NeedsType())
-    m_initializer->SetType(vt);
+  auto in = dyn_cast<Initializer *>(m_initexpr);
+
+  if (in && in->NeedsType())
+    in->SetType(vt);
 
   if (vt == tk_valueless)
     m_type = Type::Join(m_type, vt);
@@ -251,7 +272,7 @@ Node *VarDecl::ResolveFully_(Context &ctx) {
 
   m_initexpr = m_initexpr->ResolveFully(ctx);
   if (m_initexpr->Kind() == nk_Initializer)
-    m_initializer = safe_cast<Initializer *>(m_initexpr);
+    in = safe_cast<Initializer *>(m_initexpr);
 
   if (m_initexpr->m_type == tk_valueless) {
     Type t = m_initexpr->m_type;
@@ -284,35 +305,34 @@ Node *VarDecl::ResolveFully_(Context &ctx) {
   if (m_entity->Kind() == ek_Argument) {
     auto ae = safe_cast<Argument *>(m_entity);
     if (ae->m_mechanism == am_out) {
-      if (ae->m_type.IsSimpleType()) {
-        m_initializer = nullptr;
+      if (ae->m_type.IsSimpleType())
         return this;
-      }
     }
   }
 
   Node *init = m_initexpr;
 
   // If the initializer needed to create a temp, handle it now.
-  if (m_initializer)
-    init = m_initializer->m_replacement;
+  if (in) {
+    init = in->m_replacement;
 
-  if (m_initializer && m_initializer->m_rvalueTemp) {
-    // This is ugly.  If an rvalue was used to initialize a reference, then a
-    // temp was created.  That temp must be promoted to have the same lifetime
-    // as us, which means it must be constructed before us and destructed after
-    // us.  Bottom line: that VarDecl must be hoisted above us in the expr
-    // tree, and there's no pretty way to do that.
-    //
-    // So put the extra temp aside for now and do the hoisting later, just
-    // before this expression tree is handed off to a target.
-    m_rvalueTemp = m_initializer->m_rvalueTemp;
-    m_rvalueTemp = safe_cast<VarDecl *>(m_rvalueTemp->ResolveFully(ctx));
+    if (in->m_rvalueTemp) {
+      // This is ugly.  If an rvalue was used to initialize a reference, then a
+      // temp was created.  That temp must be promoted to have the same lifetime
+      // as us, which means it must be constructed before us and destructed
+      // after us.  Bottom line: that VarDecl must be hoisted above us in the
+      // expr tree, and there's no pretty way to do that.
+      //
+      // So put the extra temp aside for now and do the hoisting later, just
+      // before this expression tree is handed off to a target.
+      m_rvalueTemp = in->m_rvalueTemp;
+      m_rvalueTemp = safe_cast<VarDecl *>(m_rvalueTemp->ResolveFully(ctx));
 
-    // FIXME: This should be a compilation error; a field of reference type
-    // cannot be initialized with an rvalue.  There's no place to put the
-    // temp.
-    verify(!m_field);
+      // FIXME: This should be a compilation error; a field of reference type
+      // cannot be initialized with an rvalue.  There's no place to put the
+      // temp.
+      verify(!m_field);
+    }
   }
 
   if (init->m_type != tk_valueless) {
@@ -322,7 +342,6 @@ Node *VarDecl::ResolveFully_(Context &ctx) {
     m_initexpr = m_initexpr->ResolveFully(ctx);
   }
 
-  m_initializer = nullptr;
   return this;
 }
 

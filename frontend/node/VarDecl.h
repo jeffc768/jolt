@@ -88,8 +88,6 @@ public:
   // Variant for temps and variable declarations.
   VarDecl(Var *ve, Node *e, Node *init, DestructMode dm);
 
-  void SetInitExpr(Node *e);
-
   virtual void VisitChildren(Visitor *v);
 
   // Note: "constructor" means both constructor and destructor.
@@ -116,7 +114,8 @@ public:
   DestructMode        m_destructMode  = dm_invalid;
 
 private:
-  Initializer        *m_initializer                 = nullptr;
+  Initializer *SetInitExpr(Node *e);
+
   bool                m_constructorMode             = false;
   bool                m_generated                   = false;
   bool                m_dontInitialize              = false;

@@ -71,6 +71,8 @@ public:
   // some stuff.
   void BlockReplacement() { m_blockReplacement = true; }
 
+  Node *GetValue() { verify(m_values.size() == 1); return m_values[0]; }
+
   void BindNames(Visitor *v);
 
   virtual void VisitChildren(Visitor *v);

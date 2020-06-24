@@ -29,6 +29,9 @@ source sf_array.jolt
 assert_eq      Test1a     3214 9568 6476 7246 4296 0 5936 0 0 0
 assert_eq      Test1b     6476
 assert_eq      Test1c     4296
+assert_eq      Test1d     34 76 22 89 0 0 0 0 90 0
+assert_eq      Test1e     523 846 983 183 635
+assert_eq      Test1f     6 4 8 5
 assert_eq      Test2a     45
 assert_eq      Test2b     45
 assert_eq      Test2c     45

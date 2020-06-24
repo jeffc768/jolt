@@ -172,7 +172,21 @@ bool List::IsSubtypeOf(Type t) {
     return true;
   }
 
-  // FIXME: handle arrays, classes, and maybe other things.
+  if (t == tk_array) {
+    // Every value must be a subtype of the element type; this list represents
+    // an array type.
+    Type et = t.ElementType();
+    for (auto e : m_values) {
+      if (!e->m_type.IsSubtypeOf(et))
+        return false;
+    }
+
+    // The length of the list will checked later; for conformant arrays it must
+    // be checked at runtime anyway.
+    return true;
+  }
+
+  // FIXME: handle classes, and maybe other things.
   verify(false);
   return false;
 }

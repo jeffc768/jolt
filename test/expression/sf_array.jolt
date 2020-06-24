@@ -27,7 +27,7 @@
 // Test arrays.
 //
 // Arrays are barely working at this point, in particular:
-//  * Only operators on arrays implemented are [] and size.
+//  * Only operators on arrays implemented are [] and #.
 //  * Only an int size may be used as an index type.
 
 func Main() -> int {
@@ -60,6 +60,28 @@ func Test1() {
 
     Print("\nTest1c: ")
     m1c(ary, 2)
+
+    Print("\nTest1d: ")
+    var ary2: int[10] = (34, 76, 22, 89)
+    ary2[8] = 90
+    for x in ary2 {
+        Print(x)
+        Print(' ')
+    }
+
+    Print("\nTest1e: ")
+    var ary3: int[] = (523, 846, 983, 183, 635)
+    for x in ary3 {
+        Print(x)
+        Print(' ')
+    }
+
+    Print("\nTest1f: ")
+    var ary4 = int[](6, 4, 8, 5)
+    for x in ary4 {
+        Print(x)
+        Print(' ')
+    }
     Print("\n")
 }
 

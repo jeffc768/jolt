@@ -56,7 +56,6 @@ func Test1() {
     Print(v1.f1)
     Print(":")
     Print(r.f1)
-    Print("\n")
 
     Print("\nTest1d: ")
     var s: C1& = *p

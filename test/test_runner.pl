@@ -35,6 +35,7 @@ my @options = grep(/^-/, @ARGV);
 my @files = grep(/^[^-]/, @ARGV);
 
 my $useRelease = grep(/^--release/, @options);
+my $noEXE = grep(/^--no-exe/, @options);
 @_ = grep(/^--jobs/, @options);
 my $jobs = pop @_;
 
@@ -279,7 +280,7 @@ sub runTest {
 
     my $passed = ($c == $p);
 
-    if (!$compileOnly) {
+    if (!$compileOnly && !$noEXE) {
         if (!-e $exe) {
            close(OUT);
            $count++;

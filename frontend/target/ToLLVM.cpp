@@ -979,7 +979,11 @@ llvm::Value *ToLLVM::Translate(llvm::BasicBlock *&b, Node *e) {
       auto ln = safe_cast<Load *>(e);
       llvm::Value *addr = Translate(b, ln->m_address);
       if (b && ln->m_type != tk_void)
+#if LLVM_VERSION < 1100
         return new llvm::LoadInst(addr, g_noName, b);
+#else
+        return new llvm::LoadInst(LLVMType(ln->m_type), addr, g_noName, b);
+#endif
       return nullptr;
     }
 
@@ -1177,7 +1181,11 @@ llvm::Value *ToLLVM::Translate_(llvm::BasicBlock *&b, Unary *un) {
 
   if (un->m_type == tk_float) {
     assert(un->m_opcode == Unary::op_neg);
+#if LLVM_VERSION < 1100
     return llvm::BinaryOperator::CreateFNeg(op, g_noName, b);
+#else
+    return llvm::UnaryOperator::CreateFNeg(op, g_noName, b);
+#endif
   }
 
   // Widen an operand smaller than 32 bits.
@@ -1426,7 +1434,12 @@ llvm::Value *ToLLVM::Translate_(llvm::BasicBlock *&b, Call *cn) {
   // FIXME: if our context needs to catch exceptions, use an invoke instruction
   // instead and generate the necessary exception handling.
 
+#if LLVM_VERSION < 1100
   llvm::Value *v = llvm::CallInst::Create(func, args, g_noName, b);
+#else
+  auto ty = llvm::cast<llvm::FunctionType>(func->getType());
+  llvm::Value *v = llvm::CallInst::Create(ty, func, args, g_noName, b);
+#endif
   if (rv.m_arg) {
     new llvm::StoreInst(v, dest, false, b);
     v = nullptr;
@@ -1616,7 +1629,11 @@ llvm::Value *ToLLVM::Translate_(llvm::BasicBlock *&b, MethodBody *mbn) {
 
       llvm::Value *v = m_varMap[rv].m_addr;
       b = bb;
+#if LLVM_VERSION < 1100
       return new llvm::LoadInst(v, g_noName, bb);
+#else
+      return new llvm::LoadInst(LLVMType(rv->m_type), v, g_noName, bb);
+#endif
     }
   } else {
     // If nothing reaches the exit, say so to our parent.
@@ -1928,7 +1945,11 @@ llvm::Value *ToLLVM::Translate_(llvm::BasicBlock *&b, VtableSlot *vsn) {
   verify(ord >= 0);
   args[1] = llvm::ConstantInt::get(g_int32Ty, ord);
   e = llvm::GetElementPtrInst::Create(c->m_vtableType, e, args, g_noName, b);
+#if LLVM_VERSION < 1100
   return new llvm::LoadInst(e, g_noName, false, b);
+#else
+  return new llvm::LoadInst(c->m_vtableType, e, g_noName, false, b);
+#endif
 }
 
 llvm::Value *ToLLVM::TranslateBlock(llvm::BasicBlock *&b, Node *stmts) {

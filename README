@@ -17,7 +17,7 @@ On macOS:
   This must be rerun whenever LLVM is updated.  The flex and bison that come
   with Xcode work.
 
-  The Unix instructions above will also work on macOS.  The testing framework
+  The Unix instructions below will also work on macOS.  The testing framework
   will use whichever binary was built most recently, either by Makefile or
   by Xcode.
 

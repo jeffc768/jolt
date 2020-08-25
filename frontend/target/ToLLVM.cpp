@@ -1437,8 +1437,9 @@ llvm::Value *ToLLVM::Translate_(llvm::BasicBlock *&b, Call *cn) {
 #if LLVM_VERSION < 1100
   llvm::Value *v = llvm::CallInst::Create(func, args, g_noName, b);
 #else
-  auto ty = llvm::cast<llvm::FunctionType>(func->getType());
-  llvm::Value *v = llvm::CallInst::Create(ty, func, args, g_noName, b);
+  auto ty = func->getType()->getPointerElementType();
+  auto fty = llvm::cast<llvm::FunctionType>(ty);
+  llvm::Value *v = llvm::CallInst::Create(fty, func, args, g_noName, b);
 #endif
   if (rv.m_arg) {
     new llvm::StoreInst(v, dest, false, b);
@@ -1948,7 +1949,8 @@ llvm::Value *ToLLVM::Translate_(llvm::BasicBlock *&b, VtableSlot *vsn) {
 #if LLVM_VERSION < 1100
   return new llvm::LoadInst(e, g_noName, false, b);
 #else
-  return new llvm::LoadInst(c->m_vtableType, e, g_noName, false, b);
+  auto ty = llvm::cast<llvm::PointerType>(e->getType())->getElementType();
+  return new llvm::LoadInst(ty, e, g_noName, false, b);
 #endif
 }
 

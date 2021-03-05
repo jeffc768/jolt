@@ -50,7 +50,7 @@ IMPLEMENT_NODE(Ident)
 
 Ident::Ident(Token *name)
     : Node(name->GetLocation()),
-      m_identifier(safe_cast<String *>(name->m_value)) { }
+      m_identifier(name->StringValue()) { }
 
 Ident::Ident(Location sl, StringHelper name)
     : Node(sl),

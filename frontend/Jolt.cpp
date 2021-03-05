@@ -133,11 +133,12 @@ static bool ParseFiles(vector<const char *> &files) {
     if (Joltparse()) {
       success = false;
     } else {
-      // Convert entire syntax tree into work units.
+      // Convert entire syntax tree into nodes and entities.
       Namespace::ModuleNamespace()->Populate(yyparsetree, nullptr);
     }
 
     delete[] buf;
+    Token::Clear();
   }
 
   return success;

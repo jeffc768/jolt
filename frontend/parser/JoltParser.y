@@ -377,7 +377,7 @@ StatementNoAttrs:
   | CompoundStatement
       { $$ = new Label($1->m_location, nullptr, $1); }
   | t_label CompoundStatement
-      { auto label = safe_cast<String *>($1->m_value);
+      { auto label = $1->StringValue();
         $$ = new Label($1->GetLocation(), label, $2); }
   ;
 
@@ -671,19 +671,24 @@ Expr:
       { $$ = new Ident($1); }
   | t_char
       { $$ = new Literal($1->GetLocation(),
-                         Value::NewPseudo(Type::PseudoChar(), $1->m_value)); }
+                         Value::NewPseudo(Type::PseudoChar(),
+                                          $1->ObjectValue())); }
   | t_string
       { $$ = new Literal($1->GetLocation(),
-                         Value::NewPseudo(Type::PseudoString(), $1->m_value)); }
+                         Value::NewPseudo(Type::PseudoString(),
+                                          $1->ObjectValue())); }
   | t_integer
       { $$ = new Literal($1->GetLocation(),
-                         Value::NewPseudo(Type::PseudoInteger(), $1->m_value)); }
+                         Value::NewPseudo(Type::PseudoInteger(),
+                                          $1->ObjectValue())); }
   | t_float
       { $$ = new Literal($1->GetLocation(),
-                         Value::NewPseudo(Type::PseudoFloat(), $1->m_value)); }
+                         Value::NewPseudo(Type::PseudoFloat(),
+                                          $1->ObjectValue())); }
   | '.' Identifier
       { $$ = new Literal($1->GetLocation(),
-                         Value::NewPseudo(Type::PseudoEnum(), $2->m_value)); }
+                         Value::NewPseudo(Type::PseudoEnum(),
+                                          $2->ObjectValue())); }
   | kw_this
       { $$ = new Ident($1); }
   | kw_base
@@ -692,7 +697,7 @@ Expr:
       {
         if ($2->Kind() != nk_Block)
           $2 = new Block(new Scope(), $2);
-        auto label = safe_cast<String *>($1->m_value);
+        auto label = $1->StringValue();
         $$ = new Label($1->GetLocation(), label, $2);
       }
   | '-' Expr %prec op_unary
@@ -1126,9 +1131,9 @@ MethodDecl:
 
         if (!$1) {
           if (mk == mk_construct)
-            $1 = $<m_token>0, $1->m_value = String::Get(wks_op_apply);
+            $1 = $<m_token>0, $1->SetStringValue(String::Get(wks_op_apply));
           else if (mk == mk_destruct)
-            $1 = $<m_token>0, $1->m_value = String::Get(wkhs_destructor);
+            $1 = $<m_token>0, $1->SetStringValue(String::Get(wkhs_destructor));
         }
 
         $$ = new Method($<m_token>0->GetLocation(), mk, $1, $3, $5, $6, $7);
@@ -1224,8 +1229,8 @@ Identifier:
       { $$ = $1; }
   | t_ident pf_ident
       { $$ = $1;
-        auto s = safe_cast<String *>($$->m_value);
-        $$->m_value = s->AsNameMacro(); }
+        auto s = $$->StringValue();
+        $$->SetStringValue(s->AsNameMacro()); }
   | t_string pf_ident
       { $$ = $1; $$->m_lexeme = t_ident; }
   ;

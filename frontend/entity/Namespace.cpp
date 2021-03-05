@@ -356,7 +356,7 @@ Namespace *Namespace::MapNameToEntity(AST::SafeArray<Token *> ns) {
   Namespace *ne = this;
 
   for (Token *n : ns) {
-    auto s = safe_cast<String *>(n->m_value);
+    auto s = n->StringValue();
 
     // Lookup identifier in current scope.  If present, it must refer
     // exclusively to a namespace entity; otherwise, a new namespace entity
@@ -389,10 +389,10 @@ void Namespace::LinkToModule(AST::SafeArray<Token *> ns) {
   // FIXME: handle expr$ in specifier.
   // FIXME: disallow unusual characters, especially / and ..
   // FIXME: don't allow linking a namespace that's under export.
-  std::string s(safe_cast<String *>(ns[0]->m_value)->c_str());
+  std::string s(ns[0]->StringValue()->c_str());
   for (uint32_t i = 1; i < ns.size(); i++) {
     s += '.';
-    s += safe_cast<String *>(ns[i]->m_value)->c_str();
+    s += ns[i]->StringValue()->c_str();
   }
 
   this->LinkToModule(ns[0], String::Get(s));

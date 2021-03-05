@@ -353,7 +353,9 @@ Token *ScanBuffer(char *p, size_t len) {
 
   // A null token terminates the chain.
   new_token(0, nullptr);
-  return yytokens;
+  Token *t = yytokens;
+  yytokens = nullptr;
+  return t;
 }
 
 static void new_token(short lexeme, Object *value) {

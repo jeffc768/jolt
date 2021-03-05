@@ -41,7 +41,7 @@ Parameter::Parameter(char *n, Type t)
       m_type(t) { }
 
 Parameter::Parameter(AST::TemplateInfo &ti)
-    : m_name(safe_cast<String *>(ti.m_name->m_value)),
+    : m_name(ti.m_name->StringValue()),
       m_typeExpr(ti.m_type ? new Expr(ti.m_type) : nullptr),
       m_type(ti.m_type ? Type() : Type::JType()),
       m_value(ti.m_init ? new Expr(ti.m_init) : nullptr) {

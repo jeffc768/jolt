@@ -41,7 +41,7 @@ StringHelper::StringHelper(WellKnownString name)
 
 StringHelper::StringHelper(Token *t) {
   if (t) {
-    m_string = safe_cast<String *>(t->m_value);
+    m_string = t->StringValue();
     m_nameMacro = m_string->IsNameMacro();
   }
 }

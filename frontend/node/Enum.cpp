@@ -52,7 +52,7 @@ Enum::Enum(Location sl, AST::SafeArray<AST::MemberItem> args, Node *avType)
       mi.m_value = nullptr;
     }
 
-    auto name = safe_cast<String *>(mi.m_name->m_value);
+    auto name = mi.m_name->StringValue();
     m_names.push_back(name);
     m_attrlists.push_back(mi.m_attrs);
     m_valueExprs.push_back(mi.m_value);

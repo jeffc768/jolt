@@ -349,7 +349,7 @@ static void ConvertOperatorKeyword(Token *t) {
   t->m_lexeme = t_ident;
   t->m_next = op->m_next;
   t->m_ws_after = op->m_ws_after;
-  t->m_value = String::Get(wks);
+  t->SetStringValue(String::Get(wks));
   return;
 
 error:
@@ -358,14 +358,14 @@ error:
 
 static Token *SkipSubexpression(Token *t, short closer = ')') {
   // If we already skipped this subexpression, return memoized result.
-  if (t->m_value)
-    return safe_cast<Token *>(t->m_value);
+  if (Token *x = t->Closer())
+    return x;
 
   Token *start = t;
 
   // Skip open parenthesis.
   if (t->m_next->m_lexeme == 0) {
-    start->m_value = t;
+    start->SetCloser(t);
     return t;
   }
 
@@ -394,7 +394,7 @@ static Token *SkipSubexpression(Token *t, short closer = ')') {
     }
 
     if (t->m_next->m_lexeme == 0) {
-      start->m_value = t;
+      start->SetCloser(t);
       return t;
     }
 
@@ -402,7 +402,7 @@ static Token *SkipSubexpression(Token *t, short closer = ')') {
   }
 
   // Return closing token.
-  start->m_value = t;
+  start->SetCloser(t);
   return t;
 }
 
@@ -461,13 +461,13 @@ static void ScanAttribute(Token *start, String *name) {
   if (t->m_next->m_lexeme == kw_deferred) {
     t = t->m_next;
     t->m_lexeme = t_ident;
-    t->m_value = String::Get("@deferred", 9);
+    t->SetStringValue(String::Get("@deferred", 9));
   } else if (Token *u = SkipIdentifier(t->m_next, true)) {
     if (u == t->m_next && !name) {
       // Prepend an @ to the identifier.
       String *s = String::Get("@", 1);
-      s = s->Concat(safe_cast<String *>(u->m_value));
-      u->m_value = s;
+      s = s->Concat(u->StringValue());
+      u->SetStringValue(s);
     }
     t = u;
   } else if (t->m_next->m_lexeme == '[') {
@@ -509,7 +509,7 @@ static bool StartOfGenericParameters(Token *t) {
   // but failed to find a matching '>'.
   if (t->m_lexeme == t_langle)
     return true;
-  if (t->m_value == t)
+  if (t->Closer() == t)
     return false;
 
   Token *start = t;
@@ -517,20 +517,20 @@ static bool StartOfGenericParameters(Token *t) {
   t = t->m_next;
 
   // Assume we won't find a matching '>' and mark this '<' as just a '<'.
-  start->m_value = start;
+  start->SetCloser(start);
 
   while (true) {
     switch (t->m_lexeme) {
       // If we made it this far, then we have a generic parameter list.
       case '>':
-        start->m_value = t;
+        start->SetCloser(t);
         start->m_lexeme = t_langle;
         t->m_lexeme = t_rangle;
         return true;
 
       // Likewise for '>>'; but split it into two tokens first.
       case op_rshift:
-        start->m_value = t;
+        start->SetCloser(t);
         start->m_lexeme = t_langle;
         t->m_lexeme = t_rangle;
         t->m_next = new Token(t, '>');
@@ -554,7 +554,7 @@ static bool StartOfGenericParameters(Token *t) {
       case '<':
         if (!StartOfGenericParameters(t))
           return false;
-        t = safe_cast<Token *>(t->m_value);
+        t = t->Closer();
         break;
       case op_lexprfrag:
         t = SkipSubexpression(t, op_rexprfrag);
@@ -777,7 +777,7 @@ top:
       if (last->m_lexeme == '.' || last->m_lexeme == op_deref ||
           last->m_lexeme == op_dotstar || last->m_lexeme == op_derefstar) {
         t->m_lexeme = t_ident;
-        t->m_value = ident_class;
+        t->SetStringValue(ident_class);
         break;
       }
 
@@ -793,7 +793,7 @@ top:
         s_context.back().m_decl = kw_namespace;
       } else if (last->m_lexeme != kw_using) {
         t->m_lexeme = t_ident;
-        t->m_value = ident_namespace;
+        t->SetStringValue(ident_namespace);
       }
       break;
 
@@ -810,7 +810,7 @@ top:
     case kw_template: {
       Token *u = t->m_next;
       if (StartOfGenericParameters(u))
-        safe_cast<Token *>(u->m_value)->m_next->m_stmt_mark = t->m_stmt_mark;
+        u->Closer()->m_next->m_stmt_mark = t->m_stmt_mark;
       break;
     }
 
@@ -821,8 +821,8 @@ top:
       if (s_context.back().m_class && t->m_stmt_mark)
         s_context.back().m_decl = t->m_lexeme;
       else
-        t->m_value = t->m_lexeme == kw_this ? ident_this
-                                            : String::Get(wkhs_destructor);
+        t->SetStringValue(t->m_lexeme == kw_this ? ident_this
+                                              : String::Get(wkhs_destructor));
       break;
 
     // This is really unfortunate.  throws is both a infix and postfix operator,
@@ -866,7 +866,7 @@ top:
       if (s_context.back().m_decl != kw_func ||
           (t->m_ws_after != '\n' && t->m_next->m_lexeme != ';')) {
         t->m_lexeme = t_ident;
-        t->m_value = ident_deferred;
+        t->SetStringValue(ident_deferred);
         break;
       }
       [[fallthrough]];
@@ -900,13 +900,13 @@ top:
     case kw_type:
       if (!t->m_stmt_mark) {
         t->m_lexeme = t_ident;
-        t->m_value = ident_type;
+        t->SetStringValue(ident_type);
       }
       break;
 
     // "base" is a pseudo-ident; it needs a value.
     case kw_base:
-      t->m_value = ident_base;
+      t->SetStringValue(ident_base);
       break;
 
     // Handle lexical considerations for attributes.

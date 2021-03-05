@@ -27,8 +27,52 @@
 #include "Token.h"
 #include "Location.h"
 #include "util/InDeflator.h"
+#include "util/Integer.h"
+#include "util/String.h"
+#include "util/Verify.h"
 
-IMPLEMENT_OBJECT(Token)
+static const int BLOCKSIZE = 16383;
+
+namespace {
+  struct block_t {
+    block_t          *m_next;
+    Token             m_tokens[BLOCKSIZE];
+  };
+}
+
+static block_t *g_block = nullptr;
+static int g_next = BLOCKSIZE;
+
+void *Token::operator new(size_t size) {
+  verify(size == sizeof(Token));
+
+  if (g_next == BLOCKSIZE) {
+    block_t *old = g_block;
+    g_block = reinterpret_cast<block_t *>(malloc(sizeof(block_t)));
+    g_block->m_next = old;
+    g_next = 0;
+  }
+
+  return g_block->m_tokens + g_next++;
+}
+
+void Token::Clear() {
+  while (g_block) {
+    block_t *next = g_block->m_next;
+    free(g_block);
+    g_block = next;
+  }
+
+  g_next = BLOCKSIZE;
+}
+
+String *Token::StringValue() {
+  return safe_cast<String *>(m_value.m_object);
+}
+
+void Token::SetStringValue(String *v) {
+  m_value.m_object = v;
+}
 
 Location Token::GetLocation() {
   return Location(m_line_no, m_col);

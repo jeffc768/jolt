@@ -43,7 +43,7 @@ Transfer::Transfer(Location sl, TransferKind tk, Node *value, Token *lbl,
       m_expr(value ? value : new Literal(sl, Value::New(Type::Void()))),
       m_guard(guard) {
   if (lbl)
-    m_labelName = safe_cast<String *>(lbl->m_value);
+    m_labelName = lbl->StringValue();
 }
 
 Transfer::Transfer(TransferKind tk, Node *value)

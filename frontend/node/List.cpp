@@ -44,7 +44,7 @@ IMPLEMENT_NODE(List)
 List::List(Location sl, AST::SafeArray<AST::MemberItem> args)
     : Node(sl) {
   for (auto &mi : args) {
-    auto tag = mi.m_name ? safe_cast<String *>(mi.m_name->m_value) : nullptr;
+    auto tag = mi.m_name ? mi.m_name->StringValue() : nullptr;
     m_tags.push_back(tag);
     m_attrlists.push_back(mi.m_attrs);
     m_values.push_back(mi.m_value);

@@ -48,7 +48,7 @@ static inline Type ComputeType(Binary::Opcode op, Node *e1, Node *e2) {
   if (op >= Binary::op_seteq)
     return Type::Bool();
 
-  if (op == Binary::op_shl && op == Binary::op_shr)
+  if (op == Binary::op_shl || op == Binary::op_shr)
     verify(e2->m_type == Type::Byte());
   else 
     verify(e1->m_type == e2->m_type);

@@ -90,7 +90,7 @@ Specialization::Specialization(Entity *e, AST::TemplateClause &tmpl,
       m_root(new Parameters(e)) {
   for (AST::TemplateInfo &ti : tmpl.m_parms) {
     m_params.push_back(new Parameter(ti));
-    auto name = safe_cast<String *>(ti.m_name->m_value);
+    auto name = ti.m_name->StringValue();
     if (!m_root->ReserveParameter(name)) {
       EmitError(ti.m_name) << "Duplicate declaration of generic parameter "
                            << name << ".";

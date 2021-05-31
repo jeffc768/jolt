@@ -144,9 +144,9 @@
 			isEditable = 1;
 			outputFiles = (
 				"${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cpp",
-				"${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.h",
+				"${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.hpp",
 			);
-			script = "cd $INPUT_FILE_DIR\nbison -v -d -t -p Jolt -o $INPUT_FILE_BASE.tab.c $INPUT_FILE_NAME\nmv -f $INPUT_FILE_BASE.tab.c $INPUT_FILE_BASE.cpp\nmv -f $INPUT_FILE_BASE.tab.h $INPUT_FILE_BASE.h\n";
+			script = "cd $INPUT_FILE_DIR\nbison -v -d -t -p Jolt -o $INPUT_FILE_BASE.cpp $INPUT_FILE_NAME\n";
 		};
 /* End PBXBuildRule section */
 
@@ -939,7 +939,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = ../../../frontend;
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -997,7 +997,7 @@
 					../llvm/include,
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 			};

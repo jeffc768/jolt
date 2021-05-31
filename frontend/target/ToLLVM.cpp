@@ -2599,11 +2599,11 @@ llvm::Function *LLVMMethod::GetNativeFunction(Epoch ep, int nm) {
     case Method::nm_print_int:
       return emitPrint(m, m_method, g_int32Ty, "%d");
     case Method::nm_print_long:
-      return emitPrint(m, m_method, g_int64Ty, "%lld");
+      return emitPrint(m, m_method, g_int64Ty, "%" PRId64);
     case Method::nm_print_uint:
       return emitPrint(m, m_method, g_int32Ty, "%u");
     case Method::nm_print_ulong:
-      return emitPrint(m, m_method, g_int64Ty, "%llu");
+      return emitPrint(m, m_method, g_int64Ty, "%" PRIu64);
     case Method::nm_print_bool:
       return emitPrintBool(m, m_method);
     case Method::nm_print_string:

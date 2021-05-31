@@ -40,6 +40,7 @@
 #include "util/Integer.h"
 #include "util/SHA512.h"
 #include <ctype.h>
+#include <inttypes.h>
 #include <cmath>
 
 IMPLEMENT_OBJECT_NOSIZE(Value)
@@ -598,7 +599,7 @@ bool Value::Dump(BufferWriter &bw) {
         case 4: num = *(int32_t *)&m_data; break;
         case 8: num = *(int64_t *)&m_data; break;
       }
-      len = sprintf(buf, "%lld", static_cast<long long int>(num));
+      len = sprintf(buf, "%" PRId64, static_cast<int64_t>(num));
     } else {
       uint64_t num = 0;
       switch (m_type.StorageSize()) {
@@ -607,7 +608,7 @@ bool Value::Dump(BufferWriter &bw) {
         case 4: num = *(uint32_t *)&m_data; break;
         case 8: num = *(uint64_t *)&m_data; break;
       }
-      len = sprintf(buf, "%llu", static_cast<long long unsigned>(num));
+      len = sprintf(buf, "%" PRIu64, static_cast<uint64_t>(num));
     }
 
     return bw.Append(buf, len);
@@ -636,10 +637,10 @@ bool Value::Dump(BufferWriter &bw) {
     if (num->IsNegative()) {
       // Ugh.  Clang and GCC cannot agree on definition of int64_t.
       int64_t v = static_cast<int64_t>(*num);
-      len = sprintf(buf, "%lld", static_cast<long long int>(v));
+      len = sprintf(buf, "%" PRId64, static_cast<int64_t>(v));
     } else {
       uint64_t v = static_cast<uint64_t>(*num);
-      len = sprintf(buf, "%llu", static_cast<long long unsigned>(v));
+      len = sprintf(buf, "%" PRIu64, static_cast<uint64_t>(v));
     }
     return bw.Append(buf, len);
   }

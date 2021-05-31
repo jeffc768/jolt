@@ -11,7 +11,7 @@ build/macos/jolt/llvm-config.xcconfig
 build/macos/jolt/jolt.xcodeproj/project.xcworkspace/xcuserdata
 build/macos/jolt/jolt.xcodeproj/xcuserdata
 build/macos/xcode.products.dir
-frontend/parser/JoltParser.h
+frontend/parser/JoltParser.hpp
 frontend/parser/JoltParser.cpp
 frontend/parser/JoltParser.output
 frontend/parser/JoltScanner.cpp

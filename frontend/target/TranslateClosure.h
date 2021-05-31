@@ -34,6 +34,7 @@
 
 #include <vector>
 #include <unordered_set>
+#include <stdint.h>
 
 class Entity;
 class Expr;

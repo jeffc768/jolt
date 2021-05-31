@@ -26,13 +26,13 @@
 
 /******************************************************************************/
 
-// Must be included before Bison-generated JoltParser.h.
+// Must be included before Bison-generated JoltParser.hpp.
 #include "ParserDecls.h"
 
 #include "Config.h"
 #include "Location.h"
 #include "Token.h"
-#include "JoltParser.h"
+#include "JoltParser.hpp"
 #include "util/Integer.h"
 #include "util/Message.h"
 #include "util/String.h"

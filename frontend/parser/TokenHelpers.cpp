@@ -31,7 +31,7 @@
 #include "util/String.h"
 
 // Must come after util/Object.h.
-#include "JoltParser.h"
+#include "JoltParser.hpp"
 
 StringHelper::StringHelper(const char *s)
   : m_string(s ? String::Get(s) : nullptr) { }

@@ -52,7 +52,7 @@ FLEXFILES = $(filter %.l,$(SRCS))
 all: $(OBJDIR)/std.o
 
 clean:
-	rm -rf $(OBJDIR) $(patsubst %.y,%.h,$(YACCFILES)) $(patsubst %.y,%.cpp,$(YACCFILES)) $(patsubst %.y,%.output,$(YACCFILES)) $(patsubst %.l,%.cpp,$(FLEXFILES))
+	rm -rf $(OBJDIR) $(patsubst %.y,%.hpp,$(YACCFILES)) $(patsubst %.y,%.cpp,$(YACCFILES)) $(patsubst %.y,%.output,$(YACCFILES)) $(patsubst %.l,%.cpp,$(FLEXFILES))
 
 $(OBJDIRS):
 	@mkdir -p $(OBJDIRS)
@@ -66,11 +66,9 @@ $(OBJDIR)/%.o: %.cpp
 # FIXME: figure out a way to get the generated parser put into OBJDIR.
 .PRECIOUS: $(patsubst %.y,%.output,$(YACCFILES))
 $(YACCFILES:%.y=$(OBJDIR)/%.o): $(OBJDIR)/%.o: %.cpp
-%.cpp %.h: %.y
+%.cpp %.hpp: %.y
 	@echo Bisoning $*.y
-	@bison $(BIFLGS) -p $(<F:%Parser.y=%) -o $*.tab.c $< ; \
-	mv -f $*.tab.c $*.cpp ; \
-	mv -f $*.tab.h $*.h
+	@bison $(BIFLGS) -p $(<F:%Parser.y=%) -o $*.cpp $< 
 
 # FIXME: figure out a way to get the generated scanner put into OBJDIR.
 $(FLEXFILES:%.l=$(OBJDIR)/%.o): $(OBJDIR)/%.o: %.cpp
@@ -91,8 +89,8 @@ $(OBJDIR)/std.o: $(OBJS) $(OBJDIR)/jolt ../runtime/modules/std/std.jolt
 
 $(OBJS): | $(OBJDIRS)
 
-$(OBJDIR)/parser/Lexer.o: parser/JoltParser.h
-$(OBJDIR)/parser/JoltScanner.o: parser/JoltParser.h
-$(OBJDIR)/parser/TokenHelpers.o: parser/JoltParser.h
+$(OBJDIR)/parser/Lexer.o: parser/JoltParser.hpp
+$(OBJDIR)/parser/JoltScanner.o: parser/JoltParser.hpp
+$(OBJDIR)/parser/TokenHelpers.o: parser/JoltParser.hpp
 
 -include /dev/null $(DEPENDS)

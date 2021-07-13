@@ -36,7 +36,7 @@
 #include "util/InDeflator.h"
 #include "util/SHA512.h"
 #include "util/String.h"
-#include <ctype.h>
+#include <cctype>
 
 Metadata Entity::s_metadata { &Object::s_metadata };
 

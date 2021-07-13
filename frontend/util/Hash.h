@@ -32,8 +32,8 @@
 #pragma once
 
 #include "util/Verify.h"
-#include <stdint.h>
-#include <stdlib.h>
+#include <cstdint>
+#include <cstdlib>
 
 inline uint32_t rotl(uint32_t x,int8_t r) {
   return (x << r) | (x >> (32 - r));

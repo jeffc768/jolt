@@ -96,9 +96,9 @@
 #include "type/Type.h"
 #include "util/String.h"
 #include "util/Value.h"
+#include <cstdio>
 #include <fstream>
 #include <map>
-#include <stdio.h>
 
 #ifndef LLVM_VERSION_MAJOR
   // This macro is defined starting in 3.1.  Assume 3.0.

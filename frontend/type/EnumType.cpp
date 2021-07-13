@@ -42,7 +42,7 @@
 #include "util/SHA512.h"
 #include "util/String.h"
 #include "util/Value.h"
-#include <string.h>
+#include <cstring>
 
 extern NativeOperator *MapOpToInteger(Binary::Opcode);
 extern NativeOperator *MapOpToFloating(Binary::Opcode);

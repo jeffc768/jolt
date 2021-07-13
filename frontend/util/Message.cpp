@@ -28,8 +28,8 @@
 #include "entity/Entity.h"
 #include "parser/Location.h"
 #include "util/String.h"
-#include <string.h>
 #include <cstdio>
+#include <cstring>
 #include <map>
 
 using namespace messageimpl;

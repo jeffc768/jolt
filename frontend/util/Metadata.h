@@ -34,7 +34,7 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 class Deflator;
 class Inflator;

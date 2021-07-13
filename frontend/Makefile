@@ -23,7 +23,7 @@ else
 	FLFLGS := 
 endif
 
-CCFLGS += $(CXXFLAGS) -std=c++17 -fno-rtti -fno-exceptions
+CCFLGS += $(CXXFLAGS) -std=c++20 -fno-rtti -fno-exceptions
 LDFLGS += $(LDFLAGS)
 ifeq ($(shell uname),FreeBSD)
   ifndef CXX
@@ -34,7 +34,7 @@ endif
 CCFLGS += -I .
 SRCS = $(wildcard *.cpp *.l *.y */*.cpp */*.l */*.y */*/*.cpp */*/*.l */*/*.y)
 CCFLGS += -I $(shell $(USE_LLVM) --includedir) -DTARGET_TRIPLE=\"$(shell $(USE_LLVM) --host-target)\"
-CCFLGS += $(filter-out -DNDEBUG -D_DEBUG -O2 -O3 -std=c++0x -std=c++11 -std=c++14 -g -fomit-frame-pointer -Wmissing-field-initializers -Wno-class-memaccess -W -Wall -D__STDC_LIMIT_MACROS,$(shell $(USE_LLVM) --cxxflags))
+CCFLGS += $(filter-out -DNDEBUG -D_DEBUG -O2 -O3 -std=c++0x -std=c++11 -std=c++14 -std=c++17 -g -fomit-frame-pointer -Wmissing-field-initializers -Wno-class-memaccess -W -Wall -D__STDC_LIMIT_MACROS,$(shell $(USE_LLVM) --cxxflags))
 LDFLGS += $(filter-out -lffi -ledit,$(shell $(USE_LLVM) --ldflags --system-libs))
 LIBS = $(shell $(USE_LLVM) --libs)
 OBJS = $(patsubst %,$(OBJDIR)/%.o,$(sort $(basename $(SRCS))))

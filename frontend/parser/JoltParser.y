@@ -86,7 +86,7 @@
 #include "util/Message.h"
 #include "util/String.h"
 #include "util/Value.h"
-#include <stdio.h>
+#include <cstdio>
 
 using namespace AST;
 

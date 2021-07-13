@@ -38,8 +38,8 @@
 #include "util/InDeflator.h"
 #include "util/Message.h"
 #include "util/String.h"
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
 #ifdef _WIN32
 #  include <process.h>
@@ -398,7 +398,7 @@ static void AppendExeDirectory() {
 }
 
 #elif defined(__sun)
-#  include <limits.h>
+#  include <climits>
 
 static void AppendExeDirectory() {
   char path[PATH_MAX];
@@ -410,7 +410,7 @@ static void AppendExeDirectory() {
 }
 
 #elif defined(__linux)
-#  include <limits.h>
+#  include <climits>
 
 static void AppendExeDirectory() {
   char path[PATH_MAX];

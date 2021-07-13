@@ -31,7 +31,7 @@
 #pragma once
 
 #include "Object.h"
-#include <stdint.h>
+#include <cstdint>
 #ifndef NDEBUG
 #include <string>
 #endif

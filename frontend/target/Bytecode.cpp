@@ -27,7 +27,7 @@
 #include "Config.h"
 #include "Bytecode.h"
 #include "type/Type.h"
-#include <stdio.h>
+#include <cstdio>
 
 using namespace BC;
 

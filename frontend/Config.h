@@ -30,9 +30,8 @@
 
 #if defined(__MINGW32__)
 #  include <malloc.h>
+#elif defined(__linux)
+#  include <alloca.h>
 #else
-#  include <stdlib.h>
-#  ifndef alloca
-#    include <alloca.h>
-#  endif
+#  include <cstdlib>
 #endif

@@ -36,8 +36,8 @@
 #include "util/Integer.h"
 #include "util/Message.h"
 #include "util/String.h"
-#include <ctype.h>
-#include <string.h>
+#include <cctype>
+#include <cstring>
 #include <vector>
 
 /******************************************************************************/

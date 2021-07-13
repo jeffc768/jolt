@@ -43,9 +43,10 @@
 #include "Object.h"
 #include "parser/Location.h"
 #include "type/Type.h"
-#include <unordered_map>
-#include <memory.h>
+#include <cstring>
+#include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 class DeflatedObject;

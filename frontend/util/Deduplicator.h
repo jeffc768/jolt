@@ -31,8 +31,9 @@
 #pragma once
 
 #include "Hash.h"
-#include <memory.h>
-#include <stdint.h>
+#include <cstring>
+#include <cstdint>
+#include <memory>
 
 template<class T> class Deduplicator {
 public:

@@ -29,7 +29,7 @@
 #include "type/Type.h"
 #include "util/DeflatedObject.h"
 #include "util/Object.h"
-#include <memory.h>
+#include <memory>
 
 Metadata Object::s_metadata { nullptr };
 

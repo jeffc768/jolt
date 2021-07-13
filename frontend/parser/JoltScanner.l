@@ -10,7 +10,7 @@
 %option noyyget_lloc noyyset_lloc noyyget_debug noyyget_debug
 
 %top{
-#include <stdint.h>
+#include <cstdint>
 }
 
 %{

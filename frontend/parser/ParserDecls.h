@@ -32,8 +32,8 @@
 #pragma once
 
 #include "util/Verify.h"
-#include <stdlib.h>
-#include <stdint.h>
+#include <cstdlib>
+#include <cstdint>
 #include <utility>
 
 class AttributeList;

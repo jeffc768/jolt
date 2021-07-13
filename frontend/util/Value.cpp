@@ -39,8 +39,8 @@
 #include "util/CodeFragment.h"
 #include "util/Integer.h"
 #include "util/SHA512.h"
-#include <ctype.h>
-#include <inttypes.h>
+#include <cctype>
+#include <cinttypes>
 #include <cmath>
 
 IMPLEMENT_OBJECT_NOSIZE(Value)

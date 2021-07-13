@@ -33,9 +33,9 @@
 
 #include "Metadata.h"
 #include "Verify.h"
+#include <cstdint>
 #include <new>
 #include <utility>
-#include <stdint.h>
 
 class Deflator;
 class Inflator;

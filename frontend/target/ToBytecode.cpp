@@ -73,25 +73,10 @@
 #include "util/Integer.h"
 #include "util/String.h"
 #include "util/Value.h"
+#include <bit>
 #include <map>
-#include <stdio.h>
-#include <string.h>
-
-// Detect endianness of machine.
-namespace {
-  static struct EndianDetector {
-    union {
-      int  m_int;
-      bool m_bools[sizeof(int)];
-    } m_data;
-
-    EndianDetector() { m_data.m_int = 1; }
-  } g_littleEndian;
-}
-
-static bool IsLittleEndian() {
-  return g_littleEndian.m_data.m_bools[0];
-}
+#include <cstdio>
+#include <cstring>
 
 class BytecodeTarget: public Target {
 public:
@@ -1047,7 +1032,7 @@ void ToBytecode::Translate_(BC::BasicBlock *&b, Cast *cn) {
 static int ComputeArgumentOffset(int slot, Type t) {
   int offset = slot * sizeof(BC::Union);
 
-  if (!IsLittleEndian()) {
+  if constexpr (std::endian::native == std::endian::big) {
     switch (t.StorageSize()) {
       case 1: offset += 3;  break;
       case 2: offset += 2;  break;

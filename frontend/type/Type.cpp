@@ -36,7 +36,7 @@
 #include "util/Value.h"
 #include <algorithm>
 #include <cassert>
-#include <string.h>
+#include <cstring>
 
 using std::pair;
 using std::string;
